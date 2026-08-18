@@ -1,0 +1,82 @@
+<aside
+  class="fixed left-0 top-0 z-50 flex h-full w-72 flex-col bg-surface-container-low pt-xl shadow-[2px_0_12px_rgba(253,121,121,0.05)] transition-transform duration-300 ease-in-out"
+  [ngClass]="mobileOpen ? 'translate-x-0' : '-translate-x-full'"
+>
+  <button
+    aria-label="Close sidebar"
+    class="absolute right-md top-md rounded-full p-1 text-on-surface-variant transition-colors hover:bg-surface-container-high lg:hidden"
+    type="button"
+    (click)="closeClick.emit()"
+  >
+    <span class="material-symbols-outlined">close</span>
+  </button>
+
+  <div class="mb-xl flex items-center gap-md px-lg">
+    <div
+      class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-on-primary shadow-lg"
+    >
+      <span class="material-symbols-outlined">restaurant</span>
+    </div>
+    <div class="flex flex-col">
+      <span class="font-headline-sm tracking-tight leading-none text-primary">ThaiCMS</span>
+      <span class="font-label-sm text-on-surface-variant">Kitchen Management</span>
+    </div>
+  </div>
+
+  <nav
+    class="flex-1 space-y-xs px-md"
+    data-active-classes="bg-primary-container text-on-primary-container font-bold shadow-sm"
+  >
+    <a
+      class="group flex items-center rounded-xl px-md py-md text-on-surface-variant transition-all hover:bg-surface-container-high hover:text-on-surface"
+      href="#"
+    >
+      <span class="material-symbols-outlined mr-md transition-transform group-hover:scale-110"
+        >dashboard</span
+      >
+      <span class="font-label-md">แผงควบคุม</span>
+    </a>
+    <a
+      class="group flex items-center rounded-xl px-md py-md text-on-surface-variant transition-all hover:bg-surface-container-high hover:text-on-surface"
+      href="#"
+    >
+      <span class="material-symbols-outlined mr-md transition-transform group-hover:scale-110"
+        >inventory_2</span
+      >
+      <span class="font-label-md">จัดการวัตถุดิบ</span>
+    </a>
+    <a
+      aria-current="page"
+      class="group flex items-center rounded-xl bg-primary-container px-md py-md font-bold text-on-primary-container shadow-sm transition-all"
+      href="#"
+    >
+      <span class="material-symbols-outlined mr-md transition-transform group-hover:scale-110"
+        >menu_book</span
+      >
+      <span class="font-label-md">เมนูและสูตรอาหาร</span>
+    </a>
+    <a
+      class="group flex items-center rounded-xl px-md py-md text-on-surface-variant transition-all hover:bg-surface-container-high hover:text-on-surface"
+      href="#"
+    >
+      <span class="material-symbols-outlined mr-md transition-transform group-hover:scale-110"
+        >receipt_long</span
+      >
+      <span class="font-label-md">ยืนยันออเดอร์</span>
+    </a>
+  </nav>
+
+  <div class="mt-auto px-lg py-xl">
+    <div class="flex items-center gap-md rounded-xl bg-primary-fixed p-md">
+      <img
+        alt="Profile"
+        class="h-10 w-10 rounded-full border-2 border-on-primary object-cover"
+        src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8vXKNMVBehgmodIlXCbV2XJbXC4pJhABOM3MgdDHpUNqrMLiWi_GtorIfwbLrE5paYcodEV0UKty14CsYYdB4YioM8CePYjDmmMd9uy_nI-flyn3sYlPqqrrnreOsWPq4YK_BxojGNI1-dGczrsD1Djj4ICedYFzVE96-tn4DzKgb5j96ZZhXknuAdQLS0nvadETudC7Yx8_DGi721Dk29dHXyYlmtGiZY-xLE1muoXZv1IbHwnVPEw"
+      />
+      <div class="overflow-hidden">
+        <p class="truncate font-label-md text-on-primary-fixed">เชฟสมชาย</p>
+        <p class="font-label-sm text-on-primary-fixed-variant">แอดมิน</p>
+      </div>
+    </div>
+  </div>
+</aside>

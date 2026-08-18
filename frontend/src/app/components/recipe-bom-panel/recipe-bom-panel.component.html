@@ -1,0 +1,115 @@
+<aside
+  class="relative flex h-auto flex-col overflow-hidden rounded-2xl bg-surface-container-lowest shadow-xl lg:sticky lg:top-md lg:h-[calc(100vh-140px)]"
+>
+  <div class="relative bg-gradient-to-br from-primary/10 to-transparent p-md">
+    <div class="mb-sm flex items-start justify-between">
+      <h2 class="font-headline-md text-headline-md text-on-surface">สูตรอาหาร (BOM)</h2>
+      <button
+        class="rounded-full p-1 text-primary transition-colors hover:bg-primary/10"
+        type="button"
+      >
+        <span class="material-symbols-outlined">edit</span>
+      </button>
+    </div>
+
+    <div class="flex items-center gap-md">
+      <div class="h-16 w-16 shrink-0 overflow-hidden rounded-lg shadow-sm">
+        <img
+          alt="A close-up thumbnail of classic Thai Tom Yum Goong, focusing on a bright red shrimp and herbal broth."
+          class="h-full w-full object-cover"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiqoqLByMdQmA_hRuva_EK56h4rjHXVKjkuhZDg4brXFy4EY3rCvruAgfxw6amjTMUIPjlz1Bu-hdFqBbV08wjhY2qmKS2fSwNOJ03s6NfbIVFt4wCF7D6L1jdQbpXljDsbArX5mcdARfMxtIKreeqVBlPts0uUc9VH4cm8YRQksBbYLllUyyXwJ26zvyxlGqwJkd8KbhE6we7XFl-D523el6DR2uxadCLCaRY3pa4v0VepLInaM16Xw"
+        />
+      </div>
+      <div>
+        <h3 class="font-headline-sm text-headline-sm text-on-surface">ต้มยำกุ้งน้ำข้น</h3>
+        <p class="font-label-sm text-label-sm text-on-surface-variant">สูตรมาตรฐาน (1 ที่)</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="relative flex flex-1 flex-col gap-sm overflow-y-auto p-md">
+    <div class="mb-xs flex items-center justify-between">
+      <span class="font-label-md text-label-md font-bold text-on-surface-variant"
+        >วัตถุดิบที่ใช้</span
+      >
+      <button class="flex items-center gap-1 text-sm text-tertiary hover:underline" type="button">
+        <span class="material-symbols-outlined text-[16px]">add_circle</span>
+        เพิ่มวัตถุดิบ
+      </button>
+    </div>
+
+    @for (ingredient of ingredients; track ingredient.name) {
+      <div
+        class="group flex items-center justify-between rounded-lg bg-surface-container-low p-sm transition-colors hover:bg-surface-container"
+      >
+        <div class="flex flex-col">
+          <span class="font-body-md text-body-md text-on-surface">{{ ingredient.name }}</span>
+          <span class="font-label-sm text-label-sm text-on-surface-variant">{{
+            ingredient.unitCostText
+          }}</span>
+        </div>
+        <div class="flex items-center gap-sm">
+          <div class="text-right">
+            <span class="block font-body-md text-body-md text-on-surface">{{
+              ingredient.amountText
+            }}</span>
+            <span class="block font-label-sm text-label-sm text-primary">{{
+              ingredient.totalText
+            }}</span>
+          </div>
+          <button
+            class="text-on-surface-variant/50 opacity-0 transition-opacity hover:text-error group-hover:opacity-100"
+            type="button"
+          >
+            <span class="material-symbols-outlined text-[20px]">delete</span>
+          </button>
+        </div>
+      </div>
+    }
+
+    <div class="h-4"></div>
+  </div>
+
+  <div class="flex flex-col gap-sm border-t border-outline-variant/30 bg-surface-container p-md">
+    <div class="flex items-center justify-between">
+      <span class="font-body-md text-body-md text-on-surface-variant">ต้นทุนรวมต่อจาน</span>
+      <span class="font-headline-sm text-headline-sm text-on-surface">฿85.60</span>
+    </div>
+
+    <div class="flex items-center gap-sm">
+      <div class="relative flex-1">
+        <label
+          class="absolute -top-2 left-2 bg-surface-container px-1 text-[10px] font-label-sm text-label-sm text-primary"
+        >
+          ราคาขาย
+        </label>
+        <input
+          class="w-full rounded-lg border border-primary/40 bg-surface-container-lowest px-md py-sm text-right font-headline-sm text-headline-sm text-on-surface shadow-inner focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          type="text"
+          value="250"
+        />
+      </div>
+      <span class="font-body-md text-on-surface-variant">บาท</span>
+    </div>
+
+    <div
+      class="mt-xs flex items-center justify-between rounded-lg border border-primary/20 bg-primary/10 p-sm"
+    >
+      <span class="font-label-md text-label-md font-bold text-on-surface">กำไรสุทธิคาดการณ์</span>
+      <div class="text-right">
+        <span class="block font-headline-sm text-headline-sm leading-none text-[#22c55e]"
+          >฿164.40</span
+        >
+        <span class="font-label-sm text-label-sm text-[#22c55e] opacity-80">(65.7%)</span>
+      </div>
+    </div>
+
+    <button
+      class="mt-sm flex w-full items-center justify-center gap-xs rounded-lg bg-primary py-sm font-label-md text-label-md font-bold text-on-primary shadow-md transition-colors hover:bg-surface-tint"
+      type="button"
+    >
+      <span class="material-symbols-outlined text-[20px]">save</span>
+      บันทึกสูตรอาหาร
+    </button>
+  </div>
+</aside>

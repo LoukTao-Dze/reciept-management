@@ -1,0 +1,9 @@
+:host {
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  header {
+    left: var(--sidebar-left, 0rem);
+  }
+}

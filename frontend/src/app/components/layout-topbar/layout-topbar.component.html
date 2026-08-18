@@ -1,0 +1,40 @@
+<header
+  class="fixed left-0 right-0 top-0 z-40 flex h-16 items-center justify-between bg-surface/80 px-md shadow-[0_1px_8px_rgba(253,121,121,0.08)] backdrop-blur-xl transition-[left] duration-300 ease-in-out sm:px-lg lg:h-20 lg:px-margin-desktop"
+  [style.--sidebar-left]="sidebarOpen ? '18rem' : '0rem'"
+>
+  <div class="flex min-w-0 items-center gap-sm">
+    <button class="text-on-surface-variant" type="button" (click)="menuClick.emit()">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+
+    <div
+      class="hidden items-center gap-md rounded-full border border-outline-variant bg-surface-container px-md py-xs sm:flex"
+    >
+      <span class="material-symbols-outlined text-on-surface-variant">search</span>
+      <input
+        class="w-40 border-none bg-transparent text-sm text-on-surface outline-none md:w-56 lg:w-64"
+        placeholder="ค้นหา..."
+        type="text"
+      />
+    </div>
+  </div>
+
+  <div class="flex items-center gap-md sm:gap-lg">
+    <button class="text-on-surface-variant sm:hidden" type="button">
+      <span class="material-symbols-outlined">search</span>
+    </button>
+    <button
+      class="relative text-on-surface-variant transition-colors hover:text-primary"
+      type="button"
+    >
+      <span class="material-symbols-outlined">notifications</span>
+      <span class="absolute right-0 top-0 h-2 w-2 rounded-full bg-error"></span>
+    </button>
+    <button
+      class="hidden text-on-surface-variant transition-colors hover:text-primary sm:block"
+      type="button"
+    >
+      <span class="material-symbols-outlined">settings</span>
+    </button>
+  </div>
+</header>

@@ -1,0 +1,33 @@
+<app-layout-sidebar [mobileOpen]="isSidebarOpen" (closeClick)="closeSidebar()"></app-layout-sidebar>
+
+<button
+  aria-label="Dismiss sidebar overlay"
+  class="fixed inset-y-0 left-72 right-0 z-40 bg-black/40 transition-opacity duration-300 ease-in-out lg:hidden"
+  [class.opacity-100]="isSidebarOpen"
+  [class.opacity-0]="!isSidebarOpen"
+  [class.pointer-events-none]="!isSidebarOpen"
+  type="button"
+  (click)="closeSidebar()"
+></button>
+
+<div
+  class="pl-0 transition-[padding] duration-300 ease-in-out"
+  [ngClass]="isSidebarOpen ? 'lg:pl-72' : 'lg:pl-0'"
+>
+  <app-layout-topbar
+    [sidebarOpen]="isSidebarOpen"
+    (menuClick)="toggleSidebar()"
+  ></app-layout-topbar>
+
+  <main class="relative min-h-screen bg-surface pt-16 lg:pt-20">
+    <div class="flex h-full w-full flex-col overflow-y-auto p-md sm:p-lg">
+      <div class="grid flex-1 grid-cols-1 items-start gap-md lg:gap-gutter lg:grid-cols-12">
+        <div class="flex h-full flex-col gap-md lg:col-span-8">
+          <app-menu-list></app-menu-list>
+        </div>
+
+        <app-recipe-bom-panel class="lg:col-span-4"></app-recipe-bom-panel>
+      </div>
+    </div>
+  </main>
+</div>
