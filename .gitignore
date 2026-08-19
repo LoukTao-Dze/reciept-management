@@ -15,6 +15,15 @@ lerna-debug.log*
 /build
 /tmp
 /out-tsc
+/frontend/.angular/cache/
+/frontend/.npm
+/frontend/.tmp-home
+/frontend/.tmp-npm-cache
+
+
+# Frontend generated TypeScript artifacts in source tree
+/frontend/src/**/*.js
+/frontend/src/**/*.js.map
 
 # Environment / secrets
 .env
@@ -27,7 +36,14 @@ logs
 
 # Tests / coverage
 /coverage
+/frontend/coverage
+/backend/coverage
 /.nyc_output
+
+# Lint cache
+/.eslintcache
+/frontend/.eslintcache
+/backend/.eslintcache
 
 # IDEs and editors
 .idea/
