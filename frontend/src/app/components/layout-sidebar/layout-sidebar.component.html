@@ -28,8 +28,14 @@
     data-active-classes="bg-primary-container text-on-primary-container font-bold shadow-sm"
   >
     <a
-      class="group flex items-center rounded-xl px-md py-md text-on-surface-variant transition-all hover:bg-surface-container-high hover:text-on-surface"
-      href="#"
+      class="group flex items-center rounded-xl px-md py-md transition-all"
+      [ngClass]="
+        isActive('dashboard')
+          ? 'bg-primary-container font-bold text-on-primary-container shadow-sm'
+          : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
+      "
+      [routerLink]="'/inventory-management'"
+      (click)="closeClick.emit()"
     >
       <span class="material-symbols-outlined mr-md transition-transform group-hover:scale-110"
         >dashboard</span
@@ -37,8 +43,14 @@
       <span class="font-label-md">แผงควบคุม</span>
     </a>
     <a
-      class="group flex items-center rounded-xl px-md py-md text-on-surface-variant transition-all hover:bg-surface-container-high hover:text-on-surface"
-      href="#"
+      class="group flex items-center rounded-xl px-md py-md transition-all"
+      [ngClass]="
+        isActive('inventory')
+          ? 'bg-primary-container font-bold text-on-primary-container shadow-sm'
+          : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
+      "
+      [routerLink]="'/inventory-management'"
+      (click)="closeClick.emit()"
     >
       <span class="material-symbols-outlined mr-md transition-transform group-hover:scale-110"
         >inventory_2</span
@@ -46,24 +58,35 @@
       <span class="font-label-md">จัดการวัตถุดิบ</span>
     </a>
     <a
-      aria-current="page"
-      class="group flex items-center rounded-xl bg-primary-container px-md py-md font-bold text-on-primary-container shadow-sm transition-all"
-      href="#"
+      class="group flex items-center rounded-xl px-md py-md transition-all"
+      [attr.aria-current]="isActive('recipes') ? 'page' : null"
+      [ngClass]="
+        isActive('recipes')
+          ? 'bg-primary-container font-bold text-on-primary-container shadow-sm'
+          : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
+      "
+      [routerLink]="'/recipes-dashboard'"
+      (click)="closeClick.emit()"
     >
       <span class="material-symbols-outlined mr-md transition-transform group-hover:scale-110"
         >menu_book</span
       >
       <span class="font-label-md">เมนูและสูตรอาหาร</span>
     </a>
-    <a
-      class="group flex items-center rounded-xl px-md py-md text-on-surface-variant transition-all hover:bg-surface-container-high hover:text-on-surface"
-      href="#"
+    <button
+      class="group flex items-center rounded-xl px-md py-md transition-all"
+      [ngClass]="
+        isActive('pos')
+          ? 'bg-primary-container font-bold text-on-primary-container shadow-sm'
+          : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
+      "
+      type="button"
     >
       <span class="material-symbols-outlined mr-md transition-transform group-hover:scale-110"
         >receipt_long</span
       >
       <span class="font-label-md">ยืนยันออเดอร์</span>
-    </a>
+    </button>
   </nav>
 
   <div class="mt-auto px-lg py-xl">

@@ -1,4 +1,8 @@
-<app-layout-sidebar [mobileOpen]="isSidebarOpen" (closeClick)="closeSidebar()"></app-layout-sidebar>
+<app-layout-sidebar
+  [activeSection]="'recipes'"
+  [mobileOpen]="isSidebarOpen"
+  (closeClick)="closeSidebar()"
+></app-layout-sidebar>
 
 <button
   aria-label="Dismiss sidebar overlay"

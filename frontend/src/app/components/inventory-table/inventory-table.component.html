@@ -1,0 +1,88 @@
+<div class="rounded-xl bg-surface-container-lowest p-md shadow-sm">
+  <div class="mb-md flex items-center justify-between">
+    <h2 class="font-headline-md text-headline-md text-on-surface">รายการวัตถุดิบ</h2>
+    <div class="flex items-center gap-sm rounded-full bg-surface-container px-sm py-xs">
+      <span class="material-symbols-outlined text-[20px] text-on-surface-variant">filter_list</span>
+      <span class="font-label-sm text-label-sm text-on-surface-variant">ตัวกรอง</span>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse text-left">
+      <thead>
+        <tr class="border-b border-outline-variant/30">
+          <th class="px-sm py-sm font-label-md text-label-md font-semibold text-on-surface-variant">
+            ชื่อวัตถุดิบ
+          </th>
+          <th class="px-sm py-sm font-label-md text-label-md font-semibold text-on-surface-variant">
+            คงเหลือ
+          </th>
+          <th class="px-sm py-sm font-label-md text-label-md font-semibold text-on-surface-variant">
+            หน่วย
+          </th>
+          <th class="px-sm py-sm font-label-md text-label-md font-semibold text-on-surface-variant">
+            วันหมดอายุ
+          </th>
+          <th class="px-sm py-sm font-label-md text-label-md font-semibold text-on-surface-variant">
+            สถานะ
+          </th>
+          <th class="px-sm py-sm"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (item of items; track item.name) {
+          <tr
+            class="group transition-colors hover:bg-primary-container/10"
+            [class.bg-surface-container/20]="item.highlighted"
+          >
+            <td
+              class="flex items-center gap-sm px-sm py-sm font-body-md text-body-md text-on-surface"
+            >
+              <div
+                class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-container"
+              >
+                <span class="material-symbols-outlined text-[16px] text-on-surface-variant">{{
+                  item.icon
+                }}</span>
+              </div>
+              {{ item.name }}
+            </td>
+
+            <td class="px-sm py-sm font-body-md text-body-md text-on-surface">{{ item.amount }}</td>
+            <td class="px-sm py-sm font-body-md text-body-md text-on-surface-variant">
+              {{ item.unit }}
+            </td>
+            <td class="px-sm py-sm font-body-md text-body-md text-on-surface-variant">
+              {{ item.expiryDate }}
+            </td>
+
+            <td class="px-sm py-sm">
+              <span
+                class="rounded-full px-sm py-xs font-label-sm text-label-sm"
+                [class]="item.statusClass"
+              >
+                {{ item.statusText }}
+              </span>
+            </td>
+
+            <td class="px-sm py-sm text-right opacity-0 transition-opacity group-hover:opacity-100">
+              <button
+                class="p-xs text-on-surface-variant transition-colors hover:text-primary"
+                type="button"
+              >
+                <span class="material-symbols-outlined text-[20px]">edit</span>
+              </button>
+              <button
+                class="p-xs text-on-surface-variant transition-colors hover:text-error"
+                type="button"
+              >
+                <span class="material-symbols-outlined text-[20px]">delete</span>
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
