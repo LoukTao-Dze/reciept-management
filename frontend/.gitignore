@@ -23,6 +23,7 @@ lerna-debug.log*
 
 # TypeScript
 *.tsbuildinfo
+.angular/cache/**/.tsbuildinfo
 
 # Logs
 logs
