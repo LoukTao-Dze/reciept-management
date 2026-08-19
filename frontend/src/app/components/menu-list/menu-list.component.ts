@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { AddMenuDialogComponent } from '../add-menu-dialog/add-menu-dialog.component';
 
 interface MenuCard {
   readonly name: string;
@@ -18,10 +20,13 @@ interface MenuCard {
 @Component({
   selector: 'app-menu-list',
   standalone: true,
+  imports: [MatDialogModule],
   templateUrl: './menu-list.component.html',
   styleUrl: './menu-list.component.scss',
 })
 export class MenuListComponent {
+  private readonly dialog = inject(MatDialog);
+
   protected readonly categories = [
     { label: 'ทั้งหมด', active: true },
     { label: 'อาหารจานหลัก', active: false },
@@ -74,4 +79,15 @@ export class MenuListComponent {
       grayscale: true,
     },
   ];
+
+  protected openAddMenuModal(): void {
+    this.dialog.open(AddMenuDialogComponent, {
+      width: 'min(100vw - 32px, 64rem)',
+      maxWidth: '100vw',
+      maxHeight: '90vh',
+      autoFocus: false,
+      panelClass: 'add-menu-dialog-panel',
+      backdropClass: 'add-menu-dialog-backdrop',
+    });
+  }
 }

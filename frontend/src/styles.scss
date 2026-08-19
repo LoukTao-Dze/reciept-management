@@ -24,3 +24,18 @@ main > :last-child {
 ::-webkit-scrollbar {
   display: none;
 }
+
+.add-menu-dialog-panel .mat-mdc-dialog-container {
+  padding: 0;
+}
+
+.add-menu-dialog-panel .mat-mdc-dialog-surface {
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.add-menu-dialog-backdrop {
+  background-color: rgb(27 28 28 / 40%);
+  backdrop-filter: blur(4px);
+}
