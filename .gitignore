@@ -15,10 +15,15 @@ lerna-debug.log*
 /build
 /tmp
 /out-tsc
-/frontend/.angular/cache/
-/frontend/.npm
-/frontend/.tmp-home
-/frontend/.tmp-npm-cache
+
+# Tool caches
+**/.angular/cache/
+**/.cache/
+**/.npm/
+**/.tmp-home/
+**/.tmp-npm-cache/
+*.tsbuildinfo
+/frontend/.angular/cache/**/frontend/angular-compiler.db-lock
 
 
 # Frontend generated TypeScript artifacts in source tree
