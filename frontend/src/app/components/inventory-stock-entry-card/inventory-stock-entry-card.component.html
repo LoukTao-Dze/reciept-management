@@ -1,0 +1,64 @@
+<div class="group relative overflow-hidden rounded-xl bg-surface-container-lowest p-md shadow-sm">
+  <div
+    class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-primary/5 blur-2xl transition-colors duration-500 group-hover:bg-primary/10"
+  ></div>
+
+  <h3 class="relative z-10 mb-md font-headline-sm text-headline-sm text-on-surface">
+    บันทึกการซื้อเข้า
+  </h3>
+
+  <form class="relative z-10 flex flex-col gap-sm">
+    <div class="flex flex-col gap-xs">
+      <label class="font-label-sm text-label-sm text-on-surface-variant">เลือกวัตถุดิบ</label>
+      <div class="relative">
+        <select
+          class="w-full appearance-none rounded-lg border border-outline-variant/50 bg-surface-container-low px-sm py-sm font-body-md text-body-md text-on-surface transition-colors focus:border-primary focus:outline-none"
+        >
+          @for (option of ingredientOptions; track option) {
+            <option>{{ option }}</option>
+          }
+        </select>
+        <span
+          class="material-symbols-outlined pointer-events-none absolute right-sm top-1/2 -translate-y-1/2 text-on-surface-variant"
+          >expand_more</span
+        >
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-sm">
+      <div class="flex flex-col gap-xs">
+        <label class="font-label-sm text-label-sm text-on-surface-variant">จำนวน</label>
+        <input
+          class="w-full rounded-lg border border-outline-variant/50 bg-surface-container-low px-sm py-sm font-body-md text-body-md text-on-surface transition-colors focus:border-primary focus:outline-none"
+          placeholder="0"
+          type="number"
+        />
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <label class="font-label-sm text-label-sm text-on-surface-variant">หน่วย</label>
+        <input
+          class="w-full rounded-lg border border-outline-variant/50 bg-surface-container-low px-sm py-sm font-body-md text-body-md text-on-surface transition-colors focus:border-primary focus:outline-none"
+          placeholder="หน่วย"
+          type="text"
+        />
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <label class="font-label-sm text-label-sm text-on-surface-variant">ราคารวม (บาท)</label>
+        <input
+          class="w-full rounded-lg border border-outline-variant/50 bg-surface-container-low px-sm py-sm font-body-md text-body-md text-on-surface transition-colors focus:border-primary focus:outline-none"
+          placeholder="0.00"
+          type="number"
+        />
+      </div>
+    </div>
+
+    <button
+      class="mt-sm w-full rounded-xl border border-primary/20 bg-surface-container py-sm font-label-md text-label-md text-primary transition-colors hover:bg-surface-container-high"
+      type="button"
+    >
+      บันทึกรับเข้าสต็อก
+    </button>
+  </form>
+</div>
