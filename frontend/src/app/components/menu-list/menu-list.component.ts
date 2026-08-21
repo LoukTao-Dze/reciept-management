@@ -3,18 +3,18 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddMenuDialogComponent } from '../add-menu-dialog/add-menu-dialog.component';
 
 interface MenuCard {
-  readonly name: string;
-  readonly category: string;
-  readonly price: string;
-  readonly ingredientCount: string;
-  readonly profitLabel: string;
-  readonly statusText: string;
-  readonly statusDotClass: string;
-  readonly imageUrl: string;
-  readonly imageAlt: string;
-  readonly highlighted?: boolean;
-  readonly dimmed?: boolean;
-  readonly grayscale?: boolean;
+  name: string;
+  category: string;
+  price: string;
+  ingredientCount: string;
+  profitLabel: string;
+  statusText: string;
+  statusDotClass: string;
+  imageUrl: string;
+  imageAlt: string;
+  highlighted?: boolean;
+  dimmed?: boolean;
+  grayscale?: boolean;
 }
 
 @Component({

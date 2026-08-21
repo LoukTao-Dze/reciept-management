@@ -1,0 +1,36 @@
+<div class="w-full max-w-sm rounded-2xl bg-surface-container-lowest p-lg shadow-2xl">
+  <div class="flex items-start gap-sm">
+    <div
+      class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+      [class.bg-error/10]="data.danger"
+      [class.text-error]="data.danger"
+      [class.bg-primary/10]="!data.danger"
+      [class.text-primary]="!data.danger"
+    >
+      <span class="material-symbols-outlined">{{ data.danger ? 'warning' : 'help' }}</span>
+    </div>
+    <div class="flex-1">
+      <h2 class="font-headline-sm text-headline-sm text-on-surface">{{ data.title }}</h2>
+      <p class="mt-xs font-body-md text-body-md text-on-surface-variant">{{ data.message }}</p>
+    </div>
+  </div>
+
+  <div class="mt-lg flex items-center justify-end gap-sm">
+    <button
+      class="rounded-full px-lg py-sm font-label-md text-on-surface-variant transition-all hover:bg-surface-container-high"
+      type="button"
+      (click)="cancel()"
+    >
+      {{ data.cancelText ?? 'ยกเลิก' }}
+    </button>
+    <button
+      class="rounded-full px-lg py-sm font-label-md font-bold text-on-primary shadow-md transition-all hover:-translate-y-0.5"
+      type="button"
+      [class.bg-error]="data.danger"
+      [class.bg-primary]="!data.danger"
+      (click)="confirm()"
+    >
+      {{ data.confirmText ?? 'ยืนยัน' }}
+    </button>
+  </div>
+</div>

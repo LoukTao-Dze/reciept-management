@@ -5,8 +5,10 @@
     <div class="mb-sm flex items-start justify-between">
       <h2 class="font-headline-md text-headline-md text-on-surface">สูตรอาหาร (BOM)</h2>
       <button
-        class="rounded-full p-1 text-primary transition-colors hover:bg-primary/10"
+        class="rounded-full p-1 text-primary transition-colors hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-40"
         type="button"
+        [disabled]="isEditing()"
+        (click)="startEdit()"
       >
         <span class="material-symbols-outlined">edit</span>
       </button>
@@ -32,34 +34,73 @@
       <span class="font-label-md text-label-md font-bold text-on-surface-variant"
         >วัตถุดิบที่ใช้</span
       >
-      <button class="flex items-center gap-1 text-sm text-tertiary hover:underline" type="button">
+      <button
+        class="flex items-center gap-1 text-sm text-tertiary hover:underline disabled:pointer-events-none disabled:opacity-40"
+        type="button"
+        [disabled]="!isEditing()"
+        (click)="addIngredient()"
+      >
         <span class="material-symbols-outlined text-[16px]">add_circle</span>
         เพิ่มวัตถุดิบ
       </button>
     </div>
 
-    @for (ingredient of ingredients; track ingredient.name) {
+    @for (ingredient of ingredients(); track $index; let i = $index) {
       <div
-        class="group flex items-center justify-between rounded-lg bg-surface-container-low p-sm transition-colors hover:bg-surface-container"
+        class="group flex flex-wrap items-center justify-between gap-sm rounded-lg bg-surface-container-low p-sm transition-colors hover:bg-surface-container sm:flex-nowrap"
       >
-        <div class="flex flex-col">
-          <span class="font-body-md text-body-md text-on-surface">{{ ingredient.name }}</span>
-          <span class="font-label-sm text-label-sm text-on-surface-variant">{{
-            ingredient.unitCostText
-          }}</span>
+        <div class="flex min-w-0 flex-1 flex-col">
+          @if (isEditing()) {
+            <input
+              class="w-full min-w-0 border-b border-primary/40 bg-transparent py-0.5 font-body-md text-body-md text-on-surface focus:border-primary focus:outline-none"
+              type="text"
+              [value]="ingredient.name"
+              (input)="updateIngredientName(i, $any($event.target).value)"
+            />
+          } @else {
+            <span class="truncate font-body-md text-body-md text-on-surface">{{
+              ingredient.name
+            }}</span>
+          }
+          <span class="font-label-sm text-label-sm text-on-surface-variant"
+            >ต้นทุน: ฿{{ ingredient.costPerUnit }} {{ ingredient.unitOfMeasure }}</span
+          >
         </div>
-        <div class="flex items-center gap-sm">
+        <div
+          class="flex w-full shrink-0 items-center justify-between gap-sm sm:w-auto sm:justify-end"
+        >
           <div class="text-right">
-            <span class="block font-body-md text-body-md text-on-surface">{{
-              ingredient.amountText
-            }}</span>
-            <span class="block font-label-sm text-label-sm text-primary">{{
-              ingredient.totalText
-            }}</span>
+            @if (isEditing()) {
+              <div class="flex items-center justify-end gap-1">
+                <input
+                  class="w-14 min-w-0 border-b border-primary/40 bg-transparent py-0.5 text-right font-body-md text-body-md text-on-surface focus:border-primary focus:outline-none"
+                  type="number"
+                  [value]="ingredient.amount"
+                  (input)="updateIngredientAmount(i, $any($event.target).value)"
+                />
+                <select
+                  class="w-16 min-w-0 border-b border-primary/40 bg-transparent py-0.5 text-right font-body-md text-body-md text-on-surface focus:border-primary focus:outline-none"
+                  [value]="ingredient.unit"
+                  (change)="updateIngredientUnit(i, $any($event.target).value)"
+                >
+                  @for (unit of listUnitOfIngredient; track unit.value) {
+                    <option [value]="unit.value">{{ unit.label }}</option>
+                  }
+                </select>
+              </div>
+            } @else {
+              <span class="block font-body-md text-body-md text-on-surface">{{
+                ingredient.amount + ' ' + ingredient.unit
+              }}</span>
+            }
+            <span class="block font-label-sm text-label-sm text-primary"
+              >฿{{ ingredient.total.toFixed(2) }}</span
+            >
           </div>
           <button
-            class="text-on-surface-variant/50 opacity-0 transition-opacity hover:text-error group-hover:opacity-100"
+            class="text-on-surface-variant/50 opacity-0 transition-opacity hover:text-error group-hover:opacity-100 disabled:pointer-events-none disabled:opacity-0"
             type="button"
+            (click)="removeIngredient(ingredient)"
           >
             <span class="material-symbols-outlined text-[20px]">delete</span>
           </button>
@@ -73,7 +114,9 @@
   <div class="flex flex-col gap-sm border-t border-outline-variant/30 bg-surface-container p-md">
     <div class="flex items-center justify-between">
       <span class="font-body-md text-body-md text-on-surface-variant">ต้นทุนรวมต่อจาน</span>
-      <span class="font-headline-sm text-headline-sm text-on-surface">฿85.60</span>
+      <span class="font-headline-sm text-headline-sm text-on-surface"
+        >฿{{ totalCost().toFixed(2) }}</span
+      >
     </div>
 
     <div class="flex items-center gap-sm">
@@ -84,9 +127,11 @@
           ราคาขาย
         </label>
         <input
-          class="w-full rounded-lg border border-primary/40 bg-surface-container-lowest px-md py-sm text-right font-headline-sm text-headline-sm text-on-surface shadow-inner focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          class="w-full rounded-lg border border-primary/40 bg-surface-container-lowest px-md py-sm text-right font-headline-sm text-headline-sm text-on-surface shadow-inner focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
           type="text"
-          value="250"
+          [value]="sellPrice()"
+          [disabled]="!isEditing()"
+          (input)="updateSellPrice($any($event.target).value)"
         />
       </div>
       <span class="font-body-md text-on-surface-variant">บาท</span>
@@ -98,15 +143,19 @@
       <span class="font-label-md text-label-md font-bold text-on-surface">กำไรสุทธิคาดการณ์</span>
       <div class="text-right">
         <span class="block font-headline-sm text-headline-sm leading-none text-[#22c55e]"
-          >฿164.40</span
+          >฿{{ profit().toFixed(2) }}</span
         >
-        <span class="font-label-sm text-label-sm text-[#22c55e] opacity-80">(65.7%)</span>
+        <span class="font-label-sm text-label-sm text-[#22c55e] opacity-80"
+          >({{ profitPercent().toFixed(1) }}%)</span
+        >
       </div>
     </div>
 
     <button
-      class="mt-sm flex w-full items-center justify-center gap-xs rounded-lg bg-primary py-sm font-label-md text-label-md font-bold text-on-primary shadow-md transition-colors hover:bg-surface-tint"
+      class="mt-sm flex w-full items-center justify-center gap-xs rounded-lg bg-primary py-sm font-label-md text-label-md font-bold text-on-primary shadow-md transition-colors hover:bg-surface-tint disabled:cursor-not-allowed disabled:opacity-60"
       type="button"
+      [disabled]="!isEditing()"
+      (click)="saveRecipe()"
     >
       <span class="material-symbols-outlined text-[20px]">save</span>
       บันทึกสูตรอาหาร

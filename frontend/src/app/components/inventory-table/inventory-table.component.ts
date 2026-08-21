@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 interface InventoryItem {
   readonly name: string;
@@ -14,11 +16,14 @@ interface InventoryItem {
 @Component({
   selector: 'app-inventory-table',
   standalone: true,
+  imports: [MatDialogModule],
   templateUrl: './inventory-table.component.html',
   styleUrl: './inventory-table.component.scss',
 })
 export class InventoryTableComponent {
-  protected readonly items: readonly InventoryItem[] = [
+  private readonly dialog = inject(MatDialog);
+
+  protected items: InventoryItem[] = [
     {
       name: 'ไข่ไก่ (เบอร์ 1)',
       icon: 'egg',
@@ -48,4 +53,24 @@ export class InventoryTableComponent {
       statusClass: 'bg-surface-container-high text-on-surface-variant',
     },
   ];
+
+  protected deleteItem(item: InventoryItem): void {
+    this.dialog
+      .open(ConfirmDialogComponent, {
+        width: 'min(100vw - 32px, 24rem)',
+        autoFocus: false,
+        data: {
+          title: 'ลบวัตถุดิบ',
+          message: `ยืนยันการนำ "${item.name}" ออกจากรายการวัตถุดิบใช่หรือไม่?`,
+          confirmText: 'ลบ',
+          danger: true,
+        },
+      })
+      .afterClosed()
+      .subscribe((confirmed) => {
+        if (confirmed) {
+          this.items = this.items.filter((current) => current !== item);
+        }
+      });
+  }
 }
