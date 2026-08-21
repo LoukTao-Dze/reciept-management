@@ -38,7 +38,7 @@
       (click)="closeClick.emit()"
     >
       <span class="material-symbols-outlined mr-md transition-transform group-hover:scale-110"
-        >dashboard</span
+        >dashboard_customize</span
       >
       <span class="font-label-md">แผงควบคุม</span>
     </a>
@@ -53,7 +53,7 @@
       (click)="closeClick.emit()"
     >
       <span class="material-symbols-outlined mr-md transition-transform group-hover:scale-110"
-        >inventory_2</span
+        >warehouse</span
       >
       <span class="font-label-md">จัดการวัตถุดิบ</span>
     </a>
@@ -69,9 +69,25 @@
       (click)="closeClick.emit()"
     >
       <span class="material-symbols-outlined mr-md transition-transform group-hover:scale-110"
-        >menu_book</span
+        >local_dining</span
       >
       <span class="font-label-md">เมนูและสูตรอาหาร</span>
+    </a>
+    <a
+      class="group flex items-center rounded-xl px-md py-md transition-all"
+      [attr.aria-current]="isActive('menu-list') ? 'page' : null"
+      [ngClass]="
+        isActive('menu-list')
+          ? 'bg-primary-container font-bold text-on-primary-container shadow-sm'
+          : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
+      "
+      [routerLink]="'/menu-list'"
+      (click)="closeClick.emit()"
+    >
+      <span class="material-symbols-outlined mr-md transition-transform group-hover:scale-110"
+        >format_list_bulleted</span
+      >
+      <span class="font-label-md">รายการเมนู</span>
     </a>
     <button
       class="group flex items-center rounded-xl px-md py-md transition-all"
@@ -83,7 +99,7 @@
       type="button"
     >
       <span class="material-symbols-outlined mr-md transition-transform group-hover:scale-110"
-        >receipt_long</span
+        >point_of_sale</span
       >
       <span class="font-label-md">ยืนยันออเดอร์</span>
     </button>

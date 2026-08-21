@@ -1,0 +1,31 @@
+<app-layout-sidebar
+  [activeSection]="'menu-list'"
+  [mobileOpen]="isSidebarOpen"
+  (closeClick)="closeSidebar()"
+></app-layout-sidebar>
+
+<button
+  aria-label="Dismiss sidebar overlay"
+  class="fixed inset-y-0 left-72 right-0 z-40 bg-black/40 transition-opacity duration-300 ease-in-out lg:hidden"
+  [class.opacity-100]="isSidebarOpen"
+  [class.opacity-0]="!isSidebarOpen"
+  [class.pointer-events-none]="!isSidebarOpen"
+  type="button"
+  (click)="closeSidebar()"
+></button>
+
+<div
+  class="pl-0 transition-[padding] duration-300 ease-in-out"
+  [ngClass]="isSidebarOpen ? 'lg:pl-72' : 'lg:pl-0'"
+>
+  <app-layout-topbar
+    [sidebarOpen]="isSidebarOpen"
+    (menuClick)="toggleSidebar()"
+  ></app-layout-topbar>
+
+  <main class="relative min-h-screen bg-surface pt-16 lg:pt-20">
+    <div class="flex h-full w-full flex-col overflow-y-auto p-margin-mobile md:p-margin-desktop">
+      <ng-container [ngComponentOutlet]="menuListShowcaseComponent"></ng-container>
+    </div>
+  </main>
+</div>

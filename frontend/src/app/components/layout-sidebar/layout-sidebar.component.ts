@@ -11,10 +11,12 @@ import { RouterLinkWithHref } from '@angular/router';
 })
 export class LayoutSidebarComponent {
   @Input() mobileOpen = false;
-  @Input() activeSection: 'dashboard' | 'inventory' | 'recipes' | 'pos' = 'recipes';
+  @Input() activeSection: 'dashboard' | 'inventory' | 'recipes' | 'menu-list' | 'pos' = 'recipes';
   @Output() closeClick = new EventEmitter<void>();
 
-  protected isActive(section: 'dashboard' | 'inventory' | 'recipes' | 'pos'): boolean {
+  protected isActive(
+    section: 'dashboard' | 'inventory' | 'recipes' | 'menu-list' | 'pos',
+  ): boolean {
     return this.activeSection === section;
   }
 }

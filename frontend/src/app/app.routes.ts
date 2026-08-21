@@ -1,12 +1,13 @@
 import { Routes } from '@angular/router';
 import { InventoryManagementPage } from './pages/inventory-management/inventory-management-page';
+import { MenuListPage } from './pages/menu-list/menu-list-page';
 import { RecipesDashboardPage } from './pages/recipes-dashboard/recipes-dashboard-page';
 
 export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'recipes-dashboard',
+    redirectTo: 'menu-list',
   },
   {
     path: 'inventory-management',
@@ -17,7 +18,11 @@ export const routes: Routes = [
     component: RecipesDashboardPage,
   },
   {
+    path: 'menu-list',
+    component: MenuListPage,
+  },
+  {
     path: '**',
-    redirectTo: 'recipes-dashboard',
+    redirectTo: 'menu-list',
   },
 ];
