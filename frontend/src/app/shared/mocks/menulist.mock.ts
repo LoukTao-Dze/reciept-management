@@ -1,13 +1,13 @@
 import { MenuCard } from '../../models/menu.model';
 
-export const categories = [
+export const mockCategories = [
   { label: 'ทั้งหมด', active: true },
   { label: 'อาหารจานหลัก', active: false },
   { label: 'ของหวาน', active: false },
   { label: 'เครื่องดื่ม', active: false },
 ] as const;
 
-export const defaultMenuCards: readonly MenuCard[] = [
+export const mockMenuCards: readonly MenuCard[] = [
   {
     name: 'ต้มยำกุ้งน้ำข้น',
     category: 'อาหารจานหลัก',

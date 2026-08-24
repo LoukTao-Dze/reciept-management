@@ -1,5 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import { IngredientInput, NewMenu } from '../models/menu.model';
+import { NewMenu } from '../models/menu.model';
 
 @Injectable({ providedIn: 'root' })
 export class MenuCatalogService {
@@ -8,7 +8,6 @@ export class MenuCatalogService {
   readonly menus = this.addedMenus.asReadonly();
 
   addMenu(menu: Omit<NewMenu, 'id'>): void {
-    console.info('\x1b[7;31;40m[DEBUGGER] ->> menu\x1b[0m', menu);
     this.addedMenus.update((menus) => [
       ...menus,
       {
@@ -17,6 +16,11 @@ export class MenuCatalogService {
       },
     ]);
   }
+
+  removeMenu(id: string): void {
+    this.addedMenus.update((menus) => menus.filter((menu) => menu.id !== id));
+  }
+
   getMenuList(): readonly NewMenu[] {
     return this.addedMenus();
   }

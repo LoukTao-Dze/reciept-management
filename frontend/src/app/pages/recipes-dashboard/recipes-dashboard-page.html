@@ -27,7 +27,10 @@
     <div class="flex h-full w-full flex-col overflow-y-auto p-md sm:p-lg">
       <div class="grid flex-1 grid-cols-1 items-start gap-md lg:gap-gutter lg:grid-cols-12">
         <div class="flex h-full flex-col gap-md lg:col-span-8">
-          <app-menu-list (menuSelected)="selectMenu($event)"></app-menu-list>
+          <app-menu-list
+            (menuSelected)="selectMenu($event)"
+            (menuDeleted)="clearDeletedMenu($event)"
+          ></app-menu-list>
         </div>
 
         <app-recipe-bom-panel

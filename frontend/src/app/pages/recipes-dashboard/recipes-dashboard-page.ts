@@ -41,6 +41,12 @@ export class RecipesDashboardPage implements OnDestroy {
     this.selectedMenu = menu;
   }
 
+  clearDeletedMenu(menu: MenuCard): void {
+    if (this.selectedMenu === menu) {
+      this.selectedMenu = null;
+    }
+  }
+
   ngOnDestroy(): void {
     this.document.body.style.overflow = '';
   }

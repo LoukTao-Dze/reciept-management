@@ -9,6 +9,7 @@ export interface MenuIngredient {
 }
 
 export interface MenuCard {
+  id?: string;
   name: string;
   category: string;
   price: string;

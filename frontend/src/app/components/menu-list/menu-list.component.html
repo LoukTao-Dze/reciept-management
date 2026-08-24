@@ -61,7 +61,7 @@
 </div>
 
 <div class="mt-sm grid grid-cols-1 gap-md md:grid-cols-2">
-  @for (card of menuCardsList; track card.name) {
+  @for (card of menuCards; track card.name) {
     <article
       class="group flex cursor-pointer flex-col overflow-hidden rounded-xl transition-all"
       role="button"
@@ -87,6 +87,14 @@
           [class.group-hover\:grayscale-0]="card.grayscale"
           [src]="card.imageUrl"
         />
+        <button
+          class="absolute left-sm top-sm flex h-8 w-8 items-center justify-center rounded-full bg-surface-container-lowest/90 text-error shadow-sm backdrop-blur-sm transition-colors hover:bg-error hover:text-on-error"
+          type="button"
+          aria-label="ลบเมนู {{ card.name }}"
+          (click)="$event.stopPropagation(); deleteMenu(card)"
+        >
+          <span class="material-symbols-outlined text-[18px]">delete</span>
+        </button>
         <div
           class="absolute right-sm top-sm flex items-center gap-1 rounded-full bg-surface-container-lowest/90 px-sm py-1 shadow-sm backdrop-blur-sm"
         >
