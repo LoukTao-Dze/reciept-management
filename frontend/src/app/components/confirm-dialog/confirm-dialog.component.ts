@@ -1,13 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-
-export interface ConfirmDialogData {
-  readonly title: string;
-  readonly message: string;
-  readonly confirmText?: string;
-  readonly cancelText?: string;
-  readonly danger?: boolean;
-}
+import { ConfirmDialogData } from '../../models/confirm-dialog-data.model';
 
 @Component({
   selector: 'app-confirm-dialog',

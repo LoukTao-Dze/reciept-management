@@ -4,26 +4,41 @@
   <div class="relative bg-gradient-to-br from-primary/10 to-transparent p-md">
     <div class="mb-sm flex items-start justify-between">
       <h2 class="font-headline-md text-headline-md text-on-surface">สูตรอาหาร (BOM)</h2>
-      <button
-        class="rounded-full p-1 text-primary transition-colors hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-40"
-        type="button"
-        [disabled]="isEditing()"
-        (click)="startEdit()"
-      >
-        <span class="material-symbols-outlined">edit</span>
-      </button>
+      @if (isEditing()) {
+        <button
+          class="rounded-full p-1 text-on-surface-variant transition-colors hover:bg-error/10 hover:text-error"
+          type="button"
+          (click)="cancelEdit()"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      } @else {
+        <button
+          class="rounded-full p-1 text-primary transition-colors hover:bg-primary/10 disabled:cursor-not-allowed disabled:opacity-40"
+          type="button"
+          [disabled]="isEditing()"
+          (click)="startEdit()"
+        >
+          <span class="material-symbols-outlined">edit</span>
+        </button>
+      }
     </div>
 
     <div class="flex items-center gap-md">
       <div class="h-16 w-16 shrink-0 overflow-hidden rounded-lg shadow-sm">
         <img
-          alt="A close-up thumbnail of classic Thai Tom Yum Goong, focusing on a bright red shrimp and herbal broth."
+          [alt]="menuItem?.imageAlt ?? 'รูปภาพเมนูต้มยำกุ้งน้ำข้น'"
           class="h-full w-full object-cover"
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiqoqLByMdQmA_hRuva_EK56h4rjHXVKjkuhZDg4brXFy4EY3rCvruAgfxw6amjTMUIPjlz1Bu-hdFqBbV08wjhY2qmKS2fSwNOJ03s6NfbIVFt4wCF7D6L1jdQbpXljDsbArX5mcdARfMxtIKreeqVBlPts0uUc9VH4cm8YRQksBbYLllUyyXwJ26zvyxlGqwJkd8KbhE6we7XFl-D523el6DR2uxadCLCaRY3pa4v0VepLInaM16Xw"
+          [src]="
+            menuItem?.imageUrl ??
+            'https://lh3.googleusercontent.com/aida-public/AB6AXuCiqoqLByMdQmA_hRuva_EK56h4rjHXVKjkuhZDg4brXFy4EY3rCvruAgfxw6amjTMUIPjlz1Bu-hdFqBbV08wjhY2qmKS2fSwNOJ03s6NfbIVFt4wCF7D6L1jdQbpXljDsbArX5mcdARfMxtIKreeqVBlPts0uUc9VH4cm8YRQksBbYLllUyyXwJ26zvyxlGqwJkd8KbhE6we7XFl-D523el6DR2uxadCLCaRY3pa4v0VepLInaM16Xw'
+          "
         />
       </div>
       <div>
-        <h3 class="font-headline-sm text-headline-sm text-on-surface">ต้มยำกุ้งน้ำข้น</h3>
+        <h3 class="font-headline-sm text-headline-sm text-on-surface">
+          {{ menuItem?.name ?? 'ต้มยำกุ้งน้ำข้น' }}
+        </h3>
         <p class="font-label-sm text-label-sm text-on-surface-variant">สูตรมาตรฐาน (1 ที่)</p>
       </div>
     </div>
@@ -63,7 +78,7 @@
             }}</span>
           }
           <span class="font-label-sm text-label-sm text-on-surface-variant"
-            >ต้นทุน: ฿{{ ingredient.costPerUnit }} {{ ingredient.unitOfMeasure }}</span
+            >ต้นทุน: ฿ {{ ingredient.costPerUnit }}/{{ ingredient.unit }}</span
           >
         </div>
         <div
@@ -151,14 +166,27 @@
       </div>
     </div>
 
-    <button
-      class="mt-sm flex w-full items-center justify-center gap-xs rounded-lg bg-primary py-sm font-label-md text-label-md font-bold text-on-primary shadow-md transition-colors hover:bg-surface-tint disabled:cursor-not-allowed disabled:opacity-60"
-      type="button"
-      [disabled]="!isEditing()"
-      (click)="saveRecipe()"
-    >
-      <span class="material-symbols-outlined text-[20px]">save</span>
-      บันทึกสูตรอาหาร
-    </button>
+    <div class="mt-sm flex items-center gap-sm">
+      @if (isEditing()) {
+        <button
+          class="flex flex-1 items-center justify-center gap-xs rounded-lg border border-outline-variant py-sm font-label-md text-label-md font-bold text-on-surface-variant shadow-sm transition-colors hover:bg-surface-container"
+          type="button"
+          (click)="cancelEdit()"
+        >
+          <span class="material-symbols-outlined text-[20px]">close</span>
+          ยกเลิก
+        </button>
+      }
+      <button
+        class="flex flex-1 items-center justify-center gap-xs rounded-lg bg-primary py-sm font-label-md text-label-md font-bold text-on-primary shadow-md transition-colors hover:bg-surface-tint disabled:cursor-not-allowed disabled:opacity-60"
+        type="button"
+        [disabled]="!isEditing()"
+        (click)="saveRecipe()"
+      >
+        <span class="material-symbols-outlined text-[20px]">save</span>
+        บันทึก
+        <!-- สูตรอาหาร -->
+      </button>
+    </div>
   </div>
 </aside>

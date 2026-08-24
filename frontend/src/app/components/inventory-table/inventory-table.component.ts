@@ -1,17 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-
-interface InventoryItem {
-  readonly name: string;
-  readonly icon: string;
-  readonly amount: string;
-  readonly unit: string;
-  readonly expiryDate: string;
-  readonly statusText: string;
-  readonly statusClass: string;
-  readonly highlighted?: boolean;
-}
+import { InventoryItem } from '../../models/inventory-item.model';
 
 @Component({
   selector: 'app-inventory-table',

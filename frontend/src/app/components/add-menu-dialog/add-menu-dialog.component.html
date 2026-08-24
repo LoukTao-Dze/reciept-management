@@ -24,6 +24,7 @@
           <label class="font-label-md text-on-surface-variant">ชื่อเมนู</label>
           <input
             class="w-full rounded-xl border border-outline-variant bg-surface-container-low px-md py-sm outline-none transition-all focus:ring-2 focus:ring-primary/30"
+            [(ngModel)]="menuName"
             placeholder="เช่น ต้มยำกุ้งน้ำข้น"
             type="text"
           />
@@ -33,6 +34,7 @@
           <label class="font-label-md text-on-surface-variant">หมวดหมู่</label>
           <input
             class="w-full rounded-xl border border-outline-variant bg-surface-container-low px-md py-sm outline-none transition-all focus:ring-2 focus:ring-primary/30"
+            [(ngModel)]="category"
             placeholder="เช่น อาหารจานหลัก, ของหวาน"
             type="text"
           />
@@ -42,6 +44,7 @@
           <label class="font-label-md text-on-surface-variant">ราคาขาย (บาท)</label>
           <input
             class="w-full rounded-xl border border-outline-variant bg-surface-container-low px-md py-sm font-bold text-headline-sm text-primary outline-none transition-all focus:ring-2 focus:ring-primary/30"
+            [(ngModel)]="price"
             placeholder="0.00"
             type="number"
           />
@@ -63,36 +66,52 @@
       <div class="flex flex-col gap-md">
         <div class="flex items-center justify-between">
           <h3 class="font-label-md font-bold text-on-surface">จัดการวัตถุดิบ/สูตร</h3>
-          <button class="flex items-center gap-1 text-primary hover:underline" type="button">
+          <button
+            class="flex items-center gap-1 text-primary hover:underline"
+            type="button"
+            (click)="addIngredient()"
+          >
             <span class="material-symbols-outlined text-[18px]">add_circle</span>
             เพิ่มวัตถุดิบ
           </button>
         </div>
 
         <div class="min-h-[200px] space-y-sm rounded-xl bg-surface-container-low p-sm">
-          <div
-            class="flex items-center gap-sm rounded-lg border border-outline-variant/30 bg-surface-container-lowest p-sm"
-          >
-            <div class="flex-1">
-              <p class="font-label-md text-on-surface">เลือกวัตถุดิบ...</p>
+          @for (ingredient of ingredients; track $index) {
+            <div
+              class="flex items-center gap-sm rounded-lg border border-outline-variant/30 bg-surface-container-lowest p-sm"
+            >
+              <div class="w-full">
+                <input
+                  class="w-full border-b border-outline-variant bg-transparent text-sm text-on-surface-variant outline-none transition-colors focus:border-primary"
+                  [(ngModel)]="ingredient.name"
+                  placeholder="วัตถุดิบ..."
+                  type="text"
+                />
+              </div>
+              <div class="w-30">
+                <input
+                  class="w-full border-b border-outline-variant bg-transparent text-right outline-none"
+                  [(ngModel)]="ingredient.quantity"
+                  placeholder="ปริมาณ"
+                  type="number"
+                />
+              </div>
+              <select
+                class="w-24 border-b border-outline-variant bg-transparent text-sm text-on-surface-variant outline-none transition-colors focus:border-primary"
+                [(ngModel)]="ingredient.unit"
+                aria-label="หน่วยวัตถุดิบ"
+              >
+                @for (unit of listUnitOfIngredient; track unit.value) {
+                  <option [value]="unit.value">{{ unit.label }}</option>
+                }
+              </select>
             </div>
-            <div class="w-20">
-              <input
-                class="w-full border-b border-outline-variant bg-transparent text-right outline-none"
-                placeholder="ปริมาณ"
-                type="number"
-              />
-            </div>
-            <input
-              class="w-16 border-b border-outline-variant bg-transparent text-sm text-on-surface-variant outline-none transition-colors focus:border-primary"
-              placeholder="หน่วย"
-              type="text"
-              value="กรัม"
-            />
-          </div>
-          <p class="py-xl text-center font-label-sm text-on-surface-variant/50">
-            ยังไม่มีการเพิ่มวัตถุดิบ
-          </p>
+          } @empty {
+            <p class="py-xl text-center font-label-sm text-on-surface-variant/50">
+              ยังไม่มีการเพิ่มวัตถุดิบ
+            </p>
+          }
         </div>
 
         <div class="mt-auto space-y-sm rounded-xl border border-primary/10 bg-primary/5 p-md">
@@ -125,6 +144,8 @@
     <button
       class="transform rounded-full bg-primary px-xl py-sm font-label-md font-bold text-on-primary shadow-md transition-all hover:-translate-y-1 hover:bg-surface-tint"
       type="button"
+      [disabled]="!menuName.trim() || !category.trim() || price === null || price < 0"
+      (click)="saveMenu()"
     >
       บันทึกเมนูใหม่
     </button>

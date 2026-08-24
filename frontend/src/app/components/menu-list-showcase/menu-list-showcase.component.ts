@@ -1,25 +1,7 @@
 import { DOCUMENT, NgClass } from '@angular/common';
-import { Component, HostListener, Inject, OnDestroy } from '@angular/core';
-
-interface BomItem {
-  readonly name: string;
-  readonly quantity: string;
-  readonly cost: number;
-}
-
-interface MenuItem {
-  readonly id: string;
-  readonly name: string;
-  readonly category: string;
-  readonly price: number;
-  readonly marginPercent: number;
-  readonly badgeText: string;
-  readonly imageUrl: string;
-  readonly imageAlt: string;
-  readonly heroImageUrl: string;
-  readonly heroImageAlt: string;
-  readonly bomItems: readonly BomItem[];
-}
+import { Component, HostListener, Inject, OnDestroy, inject } from '@angular/core';
+import { MenuCatalogService } from '../../services/menu-catalog.service';
+import { MenuItem } from '../../models/recipe.model';
 
 @Component({
   selector: 'app-menu-list-showcase',
@@ -29,6 +11,8 @@ interface MenuItem {
   styleUrl: './menu-list-showcase.component.scss',
 })
 export class MenuListShowcaseComponent implements OnDestroy {
+  private readonly menuCatalog = inject(MenuCatalogService);
+
   protected readonly categories = [
     'ทั้งหมด',
     'อาหารจานเดียว',
@@ -37,7 +21,7 @@ export class MenuListShowcaseComponent implements OnDestroy {
     'เครื่องดื่ม',
   ] as const;
 
-  protected readonly menuItems: readonly MenuItem[] = [
+  private readonly defaultMenuItems: readonly MenuItem[] = [
     {
       id: 'pad-thai',
       name: 'ผัดไทยกุ้งสด',
@@ -141,9 +125,28 @@ export class MenuListShowcaseComponent implements OnDestroy {
     },
   ];
 
+  protected get menuItems(): readonly MenuItem[] {
+    return [
+      ...this.defaultMenuItems,
+      ...this.menuCatalog.menus().map((menu) => ({
+        id: menu.id,
+        name: menu.name,
+        category: menu.category,
+        price: menu.price,
+        marginPercent: 100,
+        badgeText: 'เมนูใหม่',
+        imageUrl: this.defaultMenuItems[0].imageUrl,
+        imageAlt: `รูปภาพเมนู ${menu.name}`,
+        heroImageUrl: this.defaultMenuItems[0].heroImageUrl,
+        heroImageAlt: `รูปภาพเมนู ${menu.name}`,
+        bomItems: [],
+      })),
+    ];
+  }
+
   protected selectedCategory: (typeof this.categories)[number] = this.categories[0];
   protected searchKeyword = '';
-  protected selectedMenuId = this.menuItems[0].id;
+  protected selectedMenuId = this.defaultMenuItems[0].id;
   protected isMobileDetailOpen = false;
 
   constructor(@Inject(DOCUMENT) private readonly document: Document) {}
@@ -170,7 +173,7 @@ export class MenuListShowcaseComponent implements OnDestroy {
       return firstFiltered;
     }
 
-    return this.menuItems[0];
+    return this.menuItems[0] ?? this.defaultMenuItems[0];
   }
 
   protected get selectedMenuCost(): number {

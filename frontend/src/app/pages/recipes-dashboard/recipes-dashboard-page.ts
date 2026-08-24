@@ -4,6 +4,7 @@ import { LayoutSidebarComponent } from '../../components/layout-sidebar/layout-s
 import { LayoutTopbarComponent } from '../../components/layout-topbar/layout-topbar.component';
 import { MenuListComponent } from '../../components/menu-list/menu-list.component';
 import { RecipeBomPanelComponent } from '../../components/recipe-bom-panel/recipe-bom-panel.component';
+import { MenuCard } from '../../models/menu.model';
 
 @Component({
   selector: 'app-recipes-dashboard-page',
@@ -20,6 +21,7 @@ import { RecipeBomPanelComponent } from '../../components/recipe-bom-panel/recip
 })
 export class RecipesDashboardPage implements OnDestroy {
   isSidebarOpen = false;
+  selectedMenu: MenuCard | null = null;
 
   constructor(@Inject(DOCUMENT) private readonly document: Document) {
     this.isSidebarOpen = this.isDesktopViewport();
@@ -33,6 +35,10 @@ export class RecipesDashboardPage implements OnDestroy {
   closeSidebar(): void {
     this.isSidebarOpen = false;
     this.updateBodyScrollLock();
+  }
+
+  selectMenu(menu: MenuCard): void {
+    this.selectedMenu = menu;
   }
 
   ngOnDestroy(): void {

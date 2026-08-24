@@ -1,24 +1,18 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  Input,
+  OnChanges,
+  signal,
+  SimpleChanges,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
-
-interface IngredientItem {
-  name: string;
-  costPerUnit: string;
-  unitOfMeasure: string;
-  amount: number;
-  total: number;
-  unit: unitOfIngredient;
-}
-
-enum unitOfIngredient {
-  KILO = 'กก.',
-  GRAM = 'กรัม',
-  LITER = 'ลิตร',
-  MILLILITER = 'มล.',
-  PIECE = 'ชิ้น',
-}
+import { UnitOfIngredient } from '../../enums/unit-of-ingredient.enum';
+import { MenuCard, MenuIngredient } from '../../models/menu.model';
+import { IngredientItem } from '../../models/recipe.model';
 
 @Component({
   selector: 'app-recipe-bom-panel',
@@ -27,10 +21,12 @@ enum unitOfIngredient {
   templateUrl: './recipe-bom-panel.component.html',
   styleUrl: './recipe-bom-panel.component.scss',
 })
-export class RecipeBomPanelComponent {
+export class RecipeBomPanelComponent implements OnChanges {
+  @Input() menuItem: MenuCard | null = null;
+
   private readonly dialog = inject(MatDialog);
   protected readonly isEditing = signal(false);
-  listUnitOfIngredient = Object.values(unitOfIngredient).map((unit) => ({
+  listUnitOfIngredient = Object.values(UnitOfIngredient).map((unit) => ({
     value: unit,
     label: unit,
   }));
@@ -38,39 +34,56 @@ export class RecipeBomPanelComponent {
   protected readonly ingredients = signal<readonly IngredientItem[]>([
     {
       name: 'กุ้งแชบ๊วย (ตัวใหญ่)',
-      costPerUnit: '500',
-      unitOfMeasure: 'กก.',
+      costPerUnit: 500,
       amount: 150,
       total: 75.0,
-      unit: unitOfIngredient.GRAM,
+      unit: UnitOfIngredient.GRAM,
     },
     {
       name: 'เห็ดฟาง',
-      costPerUnit: '120',
-      unitOfMeasure: 'กก.',
+      costPerUnit: 120,
       amount: 50,
       total: 6.0,
-      unit: unitOfIngredient.GRAM,
+      unit: UnitOfIngredient.GRAM,
     },
     {
       name: 'น้ำพริกเผา',
-      costPerUnit: '80',
-      unitOfMeasure: 'กก.',
+      costPerUnit: 80,
       amount: 20,
       total: 1.6,
-      unit: unitOfIngredient.GRAM,
+      unit: UnitOfIngredient.GRAM,
     },
     {
       name: 'กะทิสด',
-      costPerUnit: '60',
-      unitOfMeasure: 'ลิตร',
+      costPerUnit: 60,
       amount: 50,
       total: 3.0,
-      unit: unitOfIngredient.MILLILITER,
+      unit: UnitOfIngredient.MILLILITER,
     },
   ]);
 
   protected readonly sellPrice = signal(250);
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const selectedMenu = changes['menuItem']?.currentValue as MenuCard | null;
+    if (selectedMenu && !this.isEditing()) {
+      this.sellPrice.set(Number(selectedMenu.price.replace('฿', '')));
+      this.ingredients.set(
+        (selectedMenu.recipeIngredients ?? []).map((ingredient) =>
+          this.toIngredientItem(ingredient),
+        ),
+      );
+    }
+  }
+
+  private toIngredientItem(ingredient: MenuIngredient): IngredientItem {
+    return {
+      ...ingredient,
+      unit: ingredient.unit as UnitOfIngredient,
+    };
+  }
+
+  private editSnapshot: { ingredients: readonly IngredientItem[]; sellPrice: number } | null = null;
 
   protected readonly totalCost = computed(() =>
     this.ingredients().reduce((sum, ingredient) => sum + ingredient.total, 0),
@@ -84,10 +97,21 @@ export class RecipeBomPanelComponent {
   });
 
   startEdit(): void {
+    this.editSnapshot = { ingredients: this.ingredients(), sellPrice: this.sellPrice() };
     this.isEditing.set(true);
   }
 
   saveRecipe(): void {
+    this.editSnapshot = null;
+    this.isEditing.set(false);
+  }
+
+  cancelEdit(): void {
+    if (this.editSnapshot) {
+      this.ingredients.set(this.editSnapshot.ingredients);
+      this.sellPrice.set(this.editSnapshot.sellPrice);
+    }
+    this.editSnapshot = null;
     this.isEditing.set(false);
   }
 
@@ -124,11 +148,10 @@ export class RecipeBomPanelComponent {
     this.ingredients.update((items) => [
       {
         name: '',
-        costPerUnit: '0',
-        unitOfMeasure: 'กก.',
+        costPerUnit: 0,
         amount: 0,
         total: 0,
-        unit: unitOfIngredient.GRAM,
+        unit: UnitOfIngredient.GRAM,
       },
       ...items,
     ]);
@@ -139,10 +162,10 @@ export class RecipeBomPanelComponent {
   }
 
   updateIngredientUnit(index: number, value: string): void {
-    if (!Object.values(unitOfIngredient).includes(value as unitOfIngredient)) {
+    if (!Object.values(UnitOfIngredient).includes(value as UnitOfIngredient)) {
       return;
     }
-    this.updateIngredientAt(index, { unit: value as unitOfIngredient });
+    this.updateIngredientAt(index, { unit: value as UnitOfIngredient });
   }
 
   updateIngredientAmount(index: number, value: string): void {
