@@ -1,0 +1,145 @@
+<div class="w-full max-w-lg overflow-hidden rounded-2xl bg-surface-container-lowest shadow-2xl">
+  <div
+    class="flex items-center justify-between border-b border-outline-variant bg-primary/5 px-lg py-md"
+  >
+    <div class="flex items-center gap-sm">
+      <span class="material-symbols-outlined text-primary">inventory_2</span>
+      <h2 class="font-headline-md text-on-surface">{{ isEditing ? 'แก้ไขวัตถุดิบ' : 'เพิ่มวัตถุดิบ' }}</h2>
+    </div>
+    <button
+      [attr.aria-label]="isEditing ? 'ปิด dialog แก้ไขวัตถุดิบ' : 'ปิด dialog เพิ่มวัตถุดิบ'"
+      class="rounded-full p-1 text-on-surface-variant transition-colors hover:bg-surface-container-high"
+      type="button"
+      (click)="closeDialog()"
+    >
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  <form class="flex flex-col gap-md p-lg" (ngSubmit)="saveIngredient()">
+    <div class="flex flex-col gap-xs">
+      <label class="font-label-md text-on-surface-variant" for="ingredient-name"
+        >ชื่อวัตถุดิบ</label
+      >
+      <input
+        id="ingredient-name"
+        class="w-full rounded-xl border border-outline-variant bg-surface-container-low px-md py-sm text-on-surface outline-none transition-all focus:ring-2 focus:ring-primary/30"
+        [(ngModel)]="name"
+        name="name"
+        placeholder="เช่น เนื้อไก่สด"
+        required
+        type="text"
+      />
+    </div>
+
+    <div class="grid grid-cols-1 gap-md sm:grid-cols-2">
+      <div class="flex flex-col gap-xs">
+        <label class="font-label-md text-on-surface-variant" for="ingredient-amount">จำนวน</label>
+        <input
+          id="ingredient-amount"
+          class="w-full rounded-xl border border-outline-variant bg-surface-container-low px-md py-sm text-on-surface outline-none transition-all focus:ring-2 focus:ring-primary/30"
+          [(ngModel)]="amount"
+          min="0.01"
+          name="amount"
+          placeholder="0"
+          required
+          step="any"
+          type="number"
+        />
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <label class="font-label-md text-on-surface-variant" for="ingredient-unit">หน่วย</label>
+        <select
+          id="ingredient-unit"
+          class="w-full rounded-xl border border-outline-variant bg-surface-container-low px-md py-sm text-on-surface outline-none transition-all focus:ring-2 focus:ring-primary/30"
+          [(ngModel)]="unit"
+          name="unit"
+        >
+          @for (unitOption of units; track unitOption) {
+            <option [value]="unitOption">{{ unitOption }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-md sm:grid-cols-2">
+      <div class="flex flex-col gap-xs">
+        <label class="font-label-md text-on-surface-variant" for="ingredient-price"
+          >ราคารวม (บาท)</label
+        >
+        <input
+          id="ingredient-price"
+          class="w-full rounded-xl border border-outline-variant bg-surface-container-low px-md py-sm text-on-surface outline-none transition-all focus:ring-2 focus:ring-primary/30"
+          [(ngModel)]="totalPrice"
+          min="0"
+          name="totalPrice"
+          placeholder="0.00"
+          required
+          step="0.01"
+          type="number"
+        />
+      </div>
+
+      <div class="flex flex-col gap-xs">
+        <label class="font-label-md text-on-surface-variant" for="ingredient-expiry"
+          >วันหมดอายุ</label
+        >
+        <input
+          id="ingredient-expiry"
+          class="w-full rounded-xl border border-outline-variant bg-surface-container-low px-md py-sm text-on-surface outline-none transition-all focus:ring-2 focus:ring-primary/30"
+          [(ngModel)]="expiryDate"
+          name="expiryDate"
+          required
+          type="date"
+        />
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-xs">
+      <label class="font-label-md text-on-surface-variant" for="ingredient-alert-threshold"
+        >แจ้งเตือนเมื่อคงเหลือต่ำกว่า</label
+      >
+      <div class="flex items-center gap-sm">
+        <input
+          id="ingredient-alert-threshold"
+          class="w-full rounded-xl border border-outline-variant bg-surface-container-low px-md py-sm text-on-surface outline-none transition-all focus:ring-2 focus:ring-primary/30"
+          [(ngModel)]="alertThreshold"
+          min="0.01"
+          name="alertThreshold"
+          placeholder="0"
+          required
+          step="any"
+          type="number"
+        />
+        <span class="min-w-20 font-label-md text-on-surface-variant">{{ unit }}</span>
+      </div>
+    </div>
+
+    <div class="mt-sm flex items-center justify-end gap-md border-t border-outline-variant pt-md">
+      <button
+        class="rounded-full px-lg py-sm font-label-md text-on-surface-variant transition-colors hover:bg-surface-container-high"
+        type="button"
+        (click)="closeDialog()"
+      >
+        ยกเลิก
+      </button>
+      <button
+        class="rounded-full bg-primary px-lg py-sm font-label-md font-bold text-on-primary shadow-sm transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+        [disabled]="
+          !name.trim() ||
+          amount === null ||
+          amount <= 0 ||
+          totalPrice === null ||
+          totalPrice < 0 ||
+          alertThreshold === null ||
+          alertThreshold <= 0 ||
+          !expiryDate
+        "
+        type="submit"
+      >
+        {{ isEditing ? 'บันทึกการแก้ไข' : 'เพิ่มวัตถุดิบ' }}
+      </button>
+    </div>
+  </form>
+</div>

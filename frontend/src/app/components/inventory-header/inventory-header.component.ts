@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, output } from '@angular/core';
 
 @Component({
   selector: 'app-inventory-header',
@@ -6,4 +6,6 @@ import { Component } from '@angular/core';
   templateUrl: './inventory-header.component.html',
   styleUrl: './inventory-header.component.scss',
 })
-export class InventoryHeaderComponent {}
+export class InventoryHeaderComponent {
+  readonly addIngredientClick = output<void>();
+}
