@@ -26,7 +26,9 @@
   <main class="relative min-h-screen bg-surface pt-16 lg:pt-20">
     <div class="flex h-full w-full flex-col overflow-y-auto p-md sm:p-lg lg:p-margin-desktop">
       <div class="flex flex-col gap-lg">
-        <app-inventory-header></app-inventory-header>
+        <app-inventory-header
+          (addIngredientClick)="openAddIngredientDialog()"
+        ></app-inventory-header>
 
         <div class="grid grid-cols-12 gap-lg">
           <div class="col-span-12 flex flex-col gap-lg lg:col-span-8">
@@ -34,7 +36,9 @@
           </div>
 
           <div class="col-span-12 flex flex-col gap-lg lg:col-span-4">
-            <app-inventory-stock-entry-card></app-inventory-stock-entry-card>
+            <app-inventory-stock-entry-card
+              (stockEntrySaved)="onStockEntrySaved($event)"
+            ></app-inventory-stock-entry-card>
             <app-inventory-alerts-card></app-inventory-alerts-card>
             <app-inventory-weekly-report-card></app-inventory-weekly-report-card>
           </div>

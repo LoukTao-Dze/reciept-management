@@ -21,6 +21,9 @@
             หน่วย
           </th>
           <th class="px-sm py-sm font-label-md text-label-md font-semibold text-on-surface-variant">
+            วันที่เพิ่ม
+          </th>
+          <th class="px-sm py-sm font-label-md text-label-md font-semibold text-on-surface-variant">
             วันหมดอายุ
           </th>
           <th class="px-sm py-sm font-label-md text-label-md font-semibold text-on-surface-variant">
@@ -54,7 +57,10 @@
               {{ item.unit }}
             </td>
             <td class="px-sm py-sm font-body-md text-body-md text-on-surface-variant">
-              {{ item.expiryDate }}
+              {{ item.createDate | date: 'dd MMM yy' : 'th-TH' }}
+            </td>
+            <td class="px-sm py-sm font-body-md text-body-md text-on-surface-variant">
+              {{ item.expiryDate | date: 'dd MMM yy' : 'th-TH' }}
             </td>
 
             <td class="px-sm py-sm">
@@ -68,8 +74,10 @@
 
             <td class="px-sm py-sm text-right opacity-0 transition-opacity group-hover:opacity-100">
               <button
+                aria-label="แก้ไขวัตถุดิบ {{ item.name }}"
                 class="p-xs text-on-surface-variant transition-colors hover:text-primary"
                 type="button"
+                (click)="editItem(item)"
               >
                 <span class="material-symbols-outlined text-[20px]">edit</span>
               </button>

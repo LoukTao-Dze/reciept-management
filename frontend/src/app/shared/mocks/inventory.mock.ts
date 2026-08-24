@@ -1,0 +1,41 @@
+import { InventoryItem } from '../../models/inventory-item.model';
+
+export const mockInventoryItems: InventoryItem[] = [
+  {
+    name: 'ไข่ไก่ (เบอร์ 1)',
+    icon: 'egg',
+    amount: '15',
+    unit: 'ฟอง',
+    totalPrice: 75,
+    alertThreshold: 20,
+    createDate: new Date('2023-10-10T00:00:00'),
+    expiryDate: new Date('2023-10-12T00:00:00'),
+    statusText: 'ใกล้หมด',
+    statusClass: 'bg-primary-container/30 text-on-primary-container',
+  },
+  {
+    name: 'เนื้อปลาแซลมอน',
+    icon: 'set_meal',
+    amount: '2.5',
+    unit: 'กิโลกรัม',
+    totalPrice: 650,
+    alertThreshold: 1,
+    createDate: new Date('2023-10-08T00:00:00'),
+    expiryDate: new Date('2023-10-15T00:00:00'),
+    statusText: 'ปกติ',
+    statusClass: 'bg-surface-container-high text-on-surface-variant',
+    highlighted: true,
+  },
+  {
+    name: 'น้ำมันหอย',
+    icon: 'water_drop',
+    amount: '500',
+    unit: 'มิลลิลิตร',
+    totalPrice: 48,
+    alertThreshold: 500,
+    createDate: new Date('2024-11-01T00:00:00'),
+    expiryDate: new Date('2024-11-20T00:00:00'),
+    statusText: 'ปกติ',
+    statusClass: 'bg-surface-container-high text-on-surface-variant',
+  },
+];

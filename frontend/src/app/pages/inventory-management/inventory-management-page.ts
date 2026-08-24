@@ -1,5 +1,10 @@
 import { DOCUMENT, NgClass } from '@angular/common';
-import { Component, Inject, OnDestroy } from '@angular/core';
+import { Component, Inject, OnDestroy, ViewChild, inject } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  InventoryIngredientDialogComponent,
+  NewInventoryIngredient,
+} from '../../components/inventory-ingredient-dialog/inventory-ingredient-dialog.component';
 import { InventoryAlertsCardComponent } from '../../components/inventory-alerts-card/inventory-alerts-card.component';
 import { InventoryHeaderComponent } from '../../components/inventory-header/inventory-header.component';
 import { InventoryStockEntryCardComponent } from '../../components/inventory-stock-entry-card/inventory-stock-entry-card.component';
@@ -25,6 +30,9 @@ import { LayoutTopbarComponent } from '../../components/layout-topbar/layout-top
   styleUrl: './inventory-management-page.scss',
 })
 export class InventoryManagementPage implements OnDestroy {
+  private readonly dialog = inject(MatDialog);
+  @ViewChild(InventoryTableComponent) private readonly inventoryTable!: InventoryTableComponent;
+
   isSidebarOpen = false;
 
   constructor(@Inject(DOCUMENT) private readonly document: Document) {
@@ -39,6 +47,24 @@ export class InventoryManagementPage implements OnDestroy {
   closeSidebar(): void {
     this.isSidebarOpen = false;
     this.updateBodyScrollLock();
+  }
+
+  openAddIngredientDialog(): void {
+    this.dialog
+      .open(InventoryIngredientDialogComponent, {
+        width: 'min(100vw - 32px, 32rem)',
+        autoFocus: false,
+      })
+      .afterClosed()
+      .subscribe((ingredient: NewInventoryIngredient | undefined) => {
+        if (ingredient) {
+          this.inventoryTable.addItem(ingredient);
+        }
+      });
+  }
+
+  onStockEntrySaved(ingredient: NewInventoryIngredient): void {
+    this.inventoryTable.addItem(ingredient);
   }
 
   ngOnDestroy(): void {
