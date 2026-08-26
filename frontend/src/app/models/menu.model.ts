@@ -30,6 +30,7 @@ export interface NewMenu {
   readonly name: string;
   readonly category: string;
   readonly price: number;
+  readonly imageUrl: string;
   readonly recipeIngredients: IngredientInput[];
 }
 

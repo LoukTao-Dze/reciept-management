@@ -20,7 +20,7 @@ export class MenuListComponent {
   private readonly dialog = inject(MatDialog);
   private readonly menuCatalog = inject(MenuCatalogService);
 
-  private readonly menuCardsList = signal<readonly MenuCard[]>(mockMenuCards);
+  menuCardsList = signal<readonly MenuCard[]>(mockMenuCards);
   categories = mockCategories;
 
   protected get menuCards(): readonly MenuCard[] {
@@ -35,7 +35,7 @@ export class MenuListComponent {
         profitLabel: 'กำไร 100%',
         statusText: 'พร้อมขาย',
         statusDotClass: 'bg-[#4ade80]',
-        imageUrl: mockMenuCards[0].imageUrl,
+        imageUrl: menu.imageUrl || mockMenuCards[0].imageUrl,
         imageAlt: `รูปภาพเมนู ${menu.name}`,
       })),
     ];
