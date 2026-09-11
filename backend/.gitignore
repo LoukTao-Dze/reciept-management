@@ -21,6 +21,9 @@ lerna-debug.log*
 .env.*
 !.env.example
 
+# Database migrations
+src/database/migrations/
+
 # Logs
 logs
 *.log
@@ -50,3 +53,4 @@ logs
 # System files
 .DS_Store
 Thumbs.db
+

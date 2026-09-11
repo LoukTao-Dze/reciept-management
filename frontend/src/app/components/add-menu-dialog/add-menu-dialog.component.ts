@@ -75,8 +75,15 @@ export class AddMenuDialogComponent {
       imageUrl: this.imageUrl,
       recipeIngredients: this.ingredients,
     };
-    console.info('\x1b[7;31;40m[DEBUGGER] ->> dataMenu\x1b[0m', dataMenu);
-    this.menuCatalog.addMenu(dataMenu);
-    this.dialogRef.close(true);
+    this.menuCatalog.saveMenu(dataMenu).subscribe({
+      next: (response) => {
+        console.log('Menu saved successfully:', response);
+        this.menuCatalog.addMenu(dataMenu);
+        this.dialogRef.close(true);
+      },
+      error: (error) => {
+        console.error('Error saving menu:', error);
+      },
+    });
   }
 }

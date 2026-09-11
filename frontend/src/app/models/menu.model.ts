@@ -19,19 +19,19 @@ export interface MenuCard {
   statusDotClass: string;
   imageUrl: string;
   imageAlt: string;
-  recipeIngredients?: readonly MenuIngredient[];
+  recipeIngredients?: MenuIngredient[];
   highlighted?: boolean;
   dimmed?: boolean;
   grayscale?: boolean;
 }
 
 export interface NewMenu {
-  readonly id: string;
-  readonly name: string;
-  readonly category: string;
-  readonly price: number;
-  readonly imageUrl: string;
-  readonly recipeIngredients: IngredientInput[];
+  id?: string;
+  name: string;
+  category: string;
+  price: number;
+  imageUrl: string;
+  recipeIngredients: IngredientInput[];
 }
 
 export interface IngredientInput {

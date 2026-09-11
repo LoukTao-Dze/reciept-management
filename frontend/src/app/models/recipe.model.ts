@@ -15,7 +15,7 @@ export interface BomItem {
 }
 
 export interface MenuItem {
-  readonly id: string;
+  readonly id?: string;
   readonly name: string;
   readonly category: string;
   readonly price: number;

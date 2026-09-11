@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Output, signal } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output, signal } from '@angular/core';
 import { mockMenuCards, mockCategories } from '../../shared/mocks/menulist.mock';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddMenuDialogComponent } from '../add-menu-dialog/add-menu-dialog.component';
@@ -13,7 +13,7 @@ import { MenuCard } from '../../models/menu.model';
   templateUrl: './menu-list.component.html',
   styleUrl: './menu-list.component.scss',
 })
-export class MenuListComponent {
+export class MenuListComponent implements OnInit {
   @Output() readonly menuSelected = new EventEmitter<MenuCard>();
   @Output() readonly menuDeleted = new EventEmitter<MenuCard>();
 
@@ -23,6 +23,12 @@ export class MenuListComponent {
   menuCardsList = signal<readonly MenuCard[]>(mockMenuCards);
   categories = mockCategories;
 
+  ngOnInit(): void {
+    this.menuCatalog.fetchMenuList().subscribe({
+      error: (error) => console.error('[MENU_LIST] - FAILED TO LOAD MENU LIST', error),
+    });
+  }
+
   protected get menuCards(): readonly MenuCard[] {
     return [
       ...this.menuCardsList(),
@@ -31,12 +37,19 @@ export class MenuListComponent {
         name: menu.name,
         category: menu.category,
         price: `฿${menu.price}`,
-        ingredientCount: 'วัตถุดิบ 0 รายการ',
+        ingredientCount: `วัตถุดิบ ${menu.recipeIngredients?.length ?? 0} รายการ`,
         profitLabel: 'กำไร 100%',
         statusText: 'พร้อมขาย',
         statusDotClass: 'bg-[#4ade80]',
         imageUrl: menu.imageUrl || mockMenuCards[0].imageUrl,
         imageAlt: `รูปภาพเมนู ${menu.name}`,
+        recipeIngredients: (menu.recipeIngredients ?? []).map((ingredient) => ({
+          name: ingredient.name,
+          costPerUnit: 0,
+          amount: ingredient.quantity ?? 0,
+          total: 0,
+          unit: ingredient.unit,
+        })),
       })),
     ];
   }
@@ -63,12 +76,14 @@ export class MenuListComponent {
         if (!confirmed) return;
 
         if (menu.id) {
-          this.menuCatalog.removeMenu(menu.id);
+          this.menuCatalog.removeMenu(menu.id).subscribe({
+            next: () => this.menuDeleted.emit(menu),
+            error: (error) => console.error('[MENU_LIST] - FAILED TO DELETE MENU', error),
+          });
         } else {
           this.menuCardsList.update((menus) => menus.filter((item) => item !== menu));
+          this.menuDeleted.emit(menu);
         }
-
-        this.menuDeleted.emit(menu);
       });
   }
 

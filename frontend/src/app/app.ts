@@ -14,9 +14,13 @@ export class App {
   private readonly http = inject(HttpClient);
 
   constructor() {
-    this.http.get(environment.apiUrl, { responseType: 'text' }).subscribe({
-      next: (message) => console.log('Backend Response:', message),
-      error: (err) => console.error('Failed to reach backend', err),
+    this.http.get(`${environment.apiUrl}/health`, { responseType: 'text' }).subscribe({
+      next: (res) => {
+        console.log('NEXT:=>', res);
+      },
+      error: (err) => {
+        console.warn('ERROR:', err);
+      },
     });
   }
 }
