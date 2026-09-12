@@ -4,6 +4,58 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { UnitOfIngredient } from '../../enums/unit-of-ingredient.enum';
 import { IngredientInput } from '../../models/menu.model';
 import { MenuCatalogService } from '../../services/menu-catalog.service';
+import { switchMap } from 'rxjs';
+export interface DiscordMessageResponse {
+  type: number;
+  content: string;
+  mentions: any[];
+  mention_roles: any[];
+  attachments: Attachment[];
+  embeds: any[];
+  timestamp: string;
+  edited_timestamp: any;
+  flags: number;
+  components: any[];
+  id: string;
+  channel_id: string;
+  author: Author;
+  pinned: boolean;
+  mention_everyone: boolean;
+  tts: boolean;
+  webhook_id: string;
+}
+
+export interface UploadImageResponse {
+  status: number;
+  data: DiscordMessageResponse;
+}
+
+export interface Attachment {
+  id: string;
+  filename: string;
+  size: number;
+  url: string;
+  proxy_url: string;
+  width: number;
+  height: number;
+  content_type: string;
+  content_scan_version: number;
+  placeholder: string;
+  placeholder_version: number;
+}
+
+export interface Author {
+  id: string;
+  username: string;
+  avatar: any;
+  discriminator: string;
+  public_flags: number;
+  flags: number;
+  bot: boolean;
+  global_name: any;
+  clan: any;
+  primary_guild: any;
+}
 
 @Component({
   selector: 'app-add-menu-dialog',
@@ -27,6 +79,7 @@ export class AddMenuDialogComponent {
   protected price: number | null = null;
   protected imageUrl = '';
   protected ingredients: IngredientInput[] = [];
+  protected imageFile: File | null = null;
 
   protected closeDialog(): void {
     this.dialogRef.close();
@@ -52,6 +105,7 @@ export class AddMenuDialogComponent {
     const reader = new FileReader();
     reader.onload = () => {
       this.imageUrl = typeof reader.result === 'string' ? reader.result : '';
+      this.imageFile = file;
       input.value = '';
       this.changeDetectorRef.markForCheck();
     };
@@ -65,25 +119,42 @@ export class AddMenuDialogComponent {
     const name = this.menuName.trim();
     const category = this.category.trim();
 
-    if (!name || !category || this.price === null || this.price < 0) {
+    if (!name || !category || this.price === null || this.price < 0 || !this.imageFile) {
       return;
     }
+
     const dataMenu = {
       name,
       category,
       price: this.price,
-      imageUrl: this.imageUrl,
+      imageUrl: '',
       recipeIngredients: this.ingredients,
     };
-    this.menuCatalog.saveMenu(dataMenu).subscribe({
-      next: (response) => {
-        console.log('Menu saved successfully:', response);
-        this.menuCatalog.addMenu(dataMenu);
-        this.dialogRef.close(true);
-      },
-      error: (error) => {
-        console.error('Error saving menu:', error);
-      },
-    });
+
+    this.menuCatalog
+      .uploadImage(this.imageFile)
+      .pipe(
+        switchMap((response) => {
+          if (
+            response &&
+            response.data &&
+            response.data.attachments &&
+            response.data.attachments.length > 0
+          ) {
+            dataMenu.imageUrl = response.data.attachments[0].url;
+          }
+          return this.menuCatalog.saveMenu(dataMenu);
+        }),
+      )
+      .subscribe({
+        next: (response) => {
+          console.log('Menu saved successfully:', response);
+          this.menuCatalog.addMenu(dataMenu);
+          this.dialogRef.close(true);
+        },
+        error: (error) => {
+          console.error('Error uploading image:', error);
+        },
+      });
   }
 }

@@ -48,4 +48,18 @@ export class MenuCatalogService {
       .post(`${environment.apiUrl}/save-menu`, menu)
       .pipe(map((response) => response));
   }
+
+  uploadImage(image: File) {
+    const formData = new FormData();
+    formData.append('imageBuffer', image);
+
+    return this.http
+      .post<{
+        status: number;
+        data: {
+          attachments: { url: string }[];
+        };
+      }>(`${environment.apiUrl}/upload-image`, formData)
+      .pipe(map((response) => response));
+  }
 }
