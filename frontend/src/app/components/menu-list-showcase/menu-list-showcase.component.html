@@ -53,11 +53,19 @@
             (click)="openDetails(menu)"
           >
             <div class="h-32 w-full overflow-hidden">
-              <img
-                [alt]="menu.imageAlt"
-                class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                [src]="menu.imageUrl"
-              />
+              @if (menu?.imageUrl) {
+                <img
+                  [alt]="menu?.imageAlt"
+                  class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  [src]="menu?.imageUrl"
+                />
+              } @else {
+                <div
+                  class="flex h-full items-center justify-center bg-surface-container text-on-surface-variant"
+                >
+                  <img src="./no-image.svg" alt="No Image" class="h-full w-full object-contain" />
+                </div>
+              }
             </div>
 
             <div class="p-md">
@@ -86,7 +94,7 @@
                   isSelected(menu) ? 'text-on-primary-fixed-variant' : 'text-on-surface-variant'
                 "
               >
-                {{ menu.category }} • {{ menu.badgeText }}
+                {{ menu?.category }} • {{ menu?.badgeText }}
               </p>
 
               <div
@@ -96,7 +104,7 @@
                 "
               >
                 <span class="material-symbols-outlined text-[16px]">trending_up</span>
-                <span>Margin {{ menu.marginPercent }}%</span>
+                <span>Margin {{ menu?.marginPercent }}%</span>
               </div>
             </div>
           </button>
@@ -129,15 +137,23 @@
       </button>
 
       <div class="relative h-48 w-full overflow-hidden">
-        <img
-          class="h-full w-full object-cover"
-          [alt]="selectedMenu.heroImageAlt"
-          [src]="selectedMenu.heroImageUrl"
-        />
+        @if (selectedMenu?.heroImageUrl) {
+          <img
+            class="h-full w-full object-cover"
+            [alt]="selectedMenu?.heroImageAlt"
+            [src]="selectedMenu?.heroImageUrl"
+          />
+        } @else {
+          <div
+            class="flex h-full items-center justify-center bg-surface-container text-on-surface-variant"
+          >
+            <span class="font-label-md text-label-md">No Image</span>
+          </div>
+        }
         <div
           class="absolute inset-0 flex items-end bg-gradient-to-t from-black/60 to-transparent p-lg"
         >
-          <h2 class="font-headline-lg text-white">{{ selectedMenu.name }}</h2>
+          <h2 class="font-headline-lg text-white">{{ selectedMenu?.name }}</h2>
         </div>
       </div>
 
@@ -153,7 +169,7 @@
             <span
               class="rounded-full bg-surface-variant px-sm py-xs font-label-sm text-label-sm text-on-surface-variant"
             >
-              {{ selectedMenu.badgeText }}
+              {{ selectedMenu?.badgeText }}
             </span>
           </div>
         </div>
@@ -161,7 +177,7 @@
         <div class="mb-lg grid grid-cols-2 gap-sm">
           <div class="rounded-xl bg-surface-container-low p-sm">
             <p class="mb-1 font-label-sm text-label-sm text-on-surface-variant">ราคาขาย</p>
-            <p class="font-headline-md text-headline-md text-primary">฿{{ selectedMenu.price }}</p>
+            <p class="font-headline-md text-headline-md text-primary">฿{{ selectedMenu?.price }}</p>
           </div>
           <div class="rounded-xl bg-surface-container-low p-sm">
             <p class="mb-1 font-label-sm text-label-sm text-on-surface-variant">ต้นทุน (BOM)</p>
@@ -177,7 +193,7 @@
                 กำไรขั้นต้น (Margin)
               </p>
               <p class="font-headline-sm text-headline-sm text-primary">
-                {{ selectedMenu.marginPercent }}%
+                {{ selectedMenu?.marginPercent }}%
                 <span class="text-sm font-normal text-on-surface-variant"
                   >(฿{{ selectedMenuProfit.toFixed(2) }})</span
                 >
@@ -198,7 +214,7 @@
                   class="text-primary"
                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                   fill="none"
-                  [attr.stroke-dasharray]="selectedMenu.marginPercent + ', 100'"
+                  [attr.stroke-dasharray]="selectedMenu?.marginPercent + ', 100'"
                   stroke="currentColor"
                   stroke-linecap="round"
                   stroke-width="4"
@@ -224,7 +240,7 @@
               <span class="w-20 text-right">ต้นทุน</span>
             </div>
             <div class="flex flex-col">
-              @for (item of selectedMenu.bomItems; track item.name) {
+              @for (item of selectedMenu?.bomItems; track item.name) {
                 <div
                   class="flex items-center justify-between border-b border-surface/50 p-sm last:border-none"
                 >

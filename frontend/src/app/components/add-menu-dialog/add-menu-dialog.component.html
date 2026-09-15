@@ -102,12 +102,16 @@
               class="flex items-center gap-sm rounded-lg border border-outline-variant/30 bg-surface-container-lowest p-sm"
             >
               <div class="w-full">
-                <input
+                <select
                   class="w-full border-b border-outline-variant bg-transparent text-sm text-on-surface-variant outline-none transition-colors focus:border-primary"
                   [(ngModel)]="ingredient.name"
-                  placeholder="วัตถุดิบ..."
-                  type="text"
-                />
+                  aria-label="วัตถุดิบ"
+                >
+                  <option value="">เลือกวัตถุดิบ</option>
+                  @for (item of ingredientsList; track item.name) {
+                    <option [value]="item.name">{{ item.name }}</option>
+                  }
+                </select>
               </div>
               <div class="w-30">
                 <input

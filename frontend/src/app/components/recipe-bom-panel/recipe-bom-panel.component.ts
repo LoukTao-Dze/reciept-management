@@ -8,6 +8,7 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { InventoryIngredientsService } from '../../services/inventory-ingredients.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { UnitOfIngredient } from '../../enums/unit-of-ingredient.enum';
@@ -26,6 +27,8 @@ import { NewMenu } from '../../models/menu.model';
 export class RecipeBomPanelComponent implements OnChanges {
   @Input() menuItem: MenuCard | null = null;
   private menuCatalogService = inject(MenuCatalogService);
+  private inventoryIngredientService = inject(InventoryIngredientsService);
+
   private readonly dialog = inject(MatDialog);
   protected readonly isEditing = signal(false);
   protected readonly previewImageUrl = signal<string | null>(null);
@@ -35,6 +38,7 @@ export class RecipeBomPanelComponent implements OnChanges {
     label: unit,
     selected: false,
   }));
+  protected ingredientsList: { name: string }[] = [];
 
   protected readonly ingredients = signal<readonly IngredientItem[]>([]);
 
@@ -49,9 +53,21 @@ export class RecipeBomPanelComponent implements OnChanges {
           this.toIngredientItem(ingredient),
         ),
       );
+      this.getIngredients();
     }
   }
-
+  getIngredients() {
+    this.inventoryIngredientService.getAll().subscribe({
+      next: (ingredients) => {
+        this.ingredientsList = ingredients.map((ingredient) => ({
+          name: ingredient.name,
+        }));
+      },
+      error: (error) => {
+        console.error('Failed to fetch ingredients', error);
+      },
+    });
+  }
   private toIngredientItem(ingredient: MenuIngredient): IngredientItem {
     return {
       ...ingredient,

@@ -1,5 +1,5 @@
 import { DOCUMENT, NgClass } from '@angular/common';
-import { Component, Inject, OnDestroy } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { LayoutSidebarComponent } from '../../components/layout-sidebar/layout-sidebar.component';
 import { LayoutTopbarComponent } from '../../components/layout-topbar/layout-topbar.component';
 import { MenuListComponent } from '../../components/menu-list/menu-list.component';
@@ -19,7 +19,7 @@ import { MenuCard } from '../../models/menu.model';
   templateUrl: './recipes-dashboard-page.html',
   styleUrl: './recipes-dashboard-page.scss',
 })
-export class RecipesDashboardPage implements OnDestroy {
+export class RecipesDashboardPage implements OnDestroy, OnInit {
   isSidebarOpen = false;
   selectedMenu: MenuCard | null = null;
 
@@ -49,6 +49,10 @@ export class RecipesDashboardPage implements OnDestroy {
 
   ngOnDestroy(): void {
     this.document.body.style.overflow = '';
+  }
+
+  ngOnInit(): void {
+    // Initialize body scroll lock based on the current viewport and sidebar state
   }
 
   private updateBodyScrollLock(): void {

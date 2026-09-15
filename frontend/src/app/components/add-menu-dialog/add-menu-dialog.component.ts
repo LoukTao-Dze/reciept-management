@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { UnitOfIngredient } from '../../enums/unit-of-ingredient.enum';
 import { IngredientInput } from '../../models/menu.model';
 import { MenuCatalogService } from '../../services/menu-catalog.service';
@@ -57,6 +57,10 @@ export interface Author {
   primary_guild: any;
 }
 
+interface AddMenuDialogData {
+  ingredientsList: { name: string }[];
+}
+
 @Component({
   selector: 'app-add-menu-dialog',
   standalone: true,
@@ -68,6 +72,7 @@ export class AddMenuDialogComponent {
   private readonly dialogRef = inject(MatDialogRef<AddMenuDialogComponent>);
   private readonly menuCatalog = inject(MenuCatalogService);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly data = inject<AddMenuDialogData>(MAT_DIALOG_DATA);
 
   listUnitOfIngredient = Object.values(UnitOfIngredient).map((unit) => ({
     value: unit,
@@ -78,6 +83,7 @@ export class AddMenuDialogComponent {
   protected category = '';
   protected price: number | null = null;
   protected imageUrl = '';
+  protected ingredientsList = this.data.ingredientsList;
   protected ingredients: IngredientInput[] = [];
   protected imageFile: File | null = null;
 

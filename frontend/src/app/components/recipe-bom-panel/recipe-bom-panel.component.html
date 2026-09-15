@@ -30,15 +30,20 @@
         [class.cursor-pointer]="isEditing()"
         (click)="isEditing() && imageInput.click()"
       >
-        <img
-          [alt]="menuItem?.imageAlt ?? 'รูปภาพเมนูต้มยำกุ้งน้ำข้น'"
-          class="h-full w-full object-cover"
-          [src]="
-            previewImageUrl() ??
-            menuItem?.imageUrl ??
-            'https://lh3.googleusercontent.com/aida-public/AB6AXuCiqoqLByMdQmA_hRuva_EK56h4rjHXVKjkuhZDg4brXFy4EY3rCvruAgfxw6amjTMUIPjlz1Bu-hdFqBbV08wjhY2qmKS2fSwNOJ03s6NfbIVFt4wCF7D6L1jdQbpXljDsbArX5mcdARfMxtIKreeqVBlPts0uUc9VH4cm8YRQksBbYLllUyyXwJ26zvyxlGqwJkd8KbhE6we7XFl-D523el6DR2uxadCLCaRY3pa4v0VepLInaM16Xw'
-          "
-        />
+        @if (menuItem?.imageAlt) {
+          <img
+            [alt]="menuItem?.imageAlt"
+            class="h-full w-full object-cover"
+            [src]="previewImageUrl() ?? menuItem?.imageUrl"
+          />
+        } @else {
+          <div
+            class="flex h-full items-center justify-center bg-surface-container text-on-surface-variant"
+          >
+            <img src="./no-image.svg" alt="No Image" class="h-full w-full object-contain" />
+          </div>
+        }
+
         @if (isEditing()) {
           <div
             class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100"
@@ -85,12 +90,18 @@
       >
         <div class="flex min-w-0 flex-1 flex-col">
           @if (isEditing()) {
-            <input
+            <select
               class="w-full min-w-0 border-b border-primary/40 bg-transparent py-0.5 font-body-md text-body-md text-on-surface focus:border-primary focus:outline-none"
-              type="text"
               [value]="ingredient.name"
-              (input)="updateIngredientName(i, $any($event.target).value)"
-            />
+              (change)="updateIngredientName(i, $any($event.target).value)"
+            >
+              <option value="">เลือกวัตถุดิบ</option>
+              @for (item of ingredientsList; track item.name) {
+                <option [value]="item.name" [selected]="item.name === ingredient.name">
+                  {{ item.name }}
+                </option>
+              }
+            </select>
           } @else {
             <span class="truncate font-body-md text-body-md text-on-surface">{{
               ingredient.name
@@ -118,7 +129,9 @@
                   (change)="updateIngredientUnit(i, $any($event.target).value)"
                 >
                   @for (unit of listUnitOfIngredient; track unit.value) {
-                    <option [value]="unit.value">{{ unit.label }}</option>
+                    <option [value]="unit.value" [selected]="unit.value === ingredient.unit">
+                      {{ unit.label }}
+                    </option>
                   }
                 </select>
               </div>

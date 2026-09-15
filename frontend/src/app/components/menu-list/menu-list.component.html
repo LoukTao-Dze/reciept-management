@@ -80,13 +80,21 @@
       }
 
       <div class="relative h-40 w-full overflow-hidden">
-        <img
-          [alt]="card.imageAlt"
-          class="h-full w-full object-cover transition-all duration-500 group-hover:scale-105"
-          [class.grayscale-\[20\%\]]="card.grayscale"
-          [class.group-hover\:grayscale-0]="card.grayscale"
-          [src]="card.imageUrl"
-        />
+        @if (card.imageAlt) {
+          <img
+            [alt]="card.imageAlt"
+            class="h-full w-full object-cover transition-all duration-500 group-hover:scale-105"
+            [class.grayscale-\[20\%\]]="card.grayscale"
+            [class.group-hover\:grayscale-0]="card.grayscale"
+            [src]="card.imageUrl"
+          />
+        } @else {
+          <div
+            class="flex h-full items-center justify-center bg-surface-container text-on-surface-variant"
+          >
+            <img src="./no-image.svg" alt="No Image" class="h-full w-full object-contain" />
+          </div>
+        }
         <button
           class="absolute left-sm top-sm flex h-8 w-8 items-center justify-center rounded-full bg-surface-container-lowest/90 text-error shadow-sm backdrop-blur-sm transition-colors hover:bg-error hover:text-on-error"
           type="button"

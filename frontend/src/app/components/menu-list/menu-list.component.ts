@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { mockMenuCards, mockCategories } from '../../shared/mocks/menulist.mock';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { InventoryIngredientsService } from '../../services/inventory-ingredients.service';
 import { AddMenuDialogComponent } from '../add-menu-dialog/add-menu-dialog.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { MenuCatalogService } from '../../services/menu-catalog.service';
@@ -28,8 +29,10 @@ export class MenuListComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly menuCatalog = inject(MenuCatalogService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly inventoryIngredientService = inject(InventoryIngredientsService);
 
   menuCardsList = signal<readonly MenuCard[]>([]);
+  private ingredientsList: { name: string }[] = [];
   categories = mockCategories;
 
   ngOnInit(): void {
@@ -40,6 +43,19 @@ export class MenuListComponent implements OnInit {
         this.menuSelected.emit(menuCards[0]);
       },
       error: (error) => console.error('[MENU_LIST] - FAILED TO LOAD MENU LIST', error),
+    });
+    this.getIngredients();
+  }
+  getIngredients() {
+    this.inventoryIngredientService.getAll().subscribe({
+      next: (ingredients) => {
+        this.ingredientsList = ingredients.map((ingredient) => ({
+          name: ingredient.name,
+        }));
+      },
+      error: (error) => {
+        console.error('Failed to fetch ingredients', error);
+      },
     });
   }
 
@@ -130,6 +146,9 @@ export class MenuListComponent implements OnInit {
       autoFocus: false,
       panelClass: 'add-menu-dialog-panel',
       backdropClass: 'add-menu-dialog-backdrop',
+      data: {
+        ingredientsList: this.ingredientsList,
+      },
     });
   }
 }
