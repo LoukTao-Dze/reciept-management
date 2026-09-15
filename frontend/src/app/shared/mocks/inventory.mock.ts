@@ -2,6 +2,7 @@ import { InventoryItem } from '../../models/inventory-item.model';
 
 export const mockInventoryItems: InventoryItem[] = [
   {
+    id: '00000000-0000-4000-8000-000000000001',
     name: 'ไข่ไก่ (เบอร์ 1)',
     icon: 'egg',
     amount: '15',
@@ -14,6 +15,7 @@ export const mockInventoryItems: InventoryItem[] = [
     statusClass: 'bg-primary-container/30 text-on-primary-container',
   },
   {
+    id: '00000000-0000-4000-8000-000000000002',
     name: 'เนื้อปลาแซลมอน',
     icon: 'set_meal',
     amount: '2.5',
@@ -27,6 +29,7 @@ export const mockInventoryItems: InventoryItem[] = [
     highlighted: true,
   },
   {
+    id: '00000000-0000-4000-8000-000000000003',
     name: 'น้ำมันหอย',
     icon: 'water_drop',
     amount: '500',

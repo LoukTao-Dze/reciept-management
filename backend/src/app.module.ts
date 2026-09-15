@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SupabaseModule } from './database/supabase/supabase.module';
 import { MenusModule } from './modules/menus/menus.module';
+import { IngredientsModule } from './modules/ingredients/ingredients.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { MenusModule } from './modules/menus/menus.module';
     SupabaseModule,
     HttpModule,
     MenusModule,
+    IngredientsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

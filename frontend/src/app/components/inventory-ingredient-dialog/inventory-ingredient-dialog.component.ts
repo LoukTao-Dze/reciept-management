@@ -36,7 +36,7 @@ export class InventoryIngredientDialogComponent {
   protected unit = this.data?.ingredient?.unit ?? UnitOfIngredient.GRAM;
   protected totalPrice: number | null = this.data?.ingredient?.totalPrice ?? null;
   protected alertThreshold: number | null = this.data?.ingredient?.alertThreshold ?? null;
-  protected expiryDate = this.data?.ingredient?.expiryDate ?? '';
+  protected expiryDate: string | null = this.data?.ingredient?.expiryDate ?? null;
 
   protected closeDialog(): void {
     this.dialogRef.close();
@@ -53,10 +53,11 @@ export class InventoryIngredientDialogComponent {
       this.totalPrice < 0 ||
       this.alertThreshold === null ||
       this.alertThreshold <= 0 ||
-      !this.expiryDate
+      this.expiryDate === null
     ) {
       return;
     }
+    const expiryDate = new Date(`${this.expiryDate}T00:00:00`).toISOString();
 
     this.dialogRef.close({
       name,
@@ -64,7 +65,7 @@ export class InventoryIngredientDialogComponent {
       unit: this.unit,
       totalPrice: this.totalPrice,
       alertThreshold: this.alertThreshold,
-      expiryDate: this.expiryDate,
+      expiryDate,
     } satisfies NewInventoryIngredient);
   }
 }

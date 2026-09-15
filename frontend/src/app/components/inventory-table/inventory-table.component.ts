@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import {
@@ -7,7 +7,10 @@ import {
 } from '../inventory-ingredient-dialog/inventory-ingredient-dialog.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { InventoryItem } from '../../models/inventory-item.model';
-import { mockInventoryItems } from '../../shared/mocks/inventory.mock';
+import {
+  InventoryIngredient,
+  InventoryIngredientsService,
+} from '../../services/inventory-ingredients.service';
 
 @Component({
   selector: 'app-inventory-table',
@@ -16,47 +19,31 @@ import { mockInventoryItems } from '../../shared/mocks/inventory.mock';
   templateUrl: './inventory-table.component.html',
   styleUrl: './inventory-table.component.scss',
 })
-export class InventoryTableComponent {
+export class InventoryTableComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly changeDetectorRef = inject(ChangeDetectorRef);
+  private readonly inventoryIngredientsService = inject(InventoryIngredientsService);
 
-  /**
-   * this is a temporary solution to display the status text and class based on the amount and alert threshold.
-   */
-  protected items: InventoryItem[] = mockInventoryItems.map((item) => {
-    const isLowStock = +item.amount <= item.alertThreshold;
-    return {
-      ...item,
-      createDate: new Date(item.createDate),
-      expiryDate: new Date(item.expiryDate),
-      statusText: isLowStock ? 'ใกล้หมด' : 'ปกติ',
-      statusClass: isLowStock
-        ? 'bg-primary-container/30 text-on-primary-container'
-        : 'bg-surface-container-high text-on-surface-variant',
-    };
-  });
+  protected items: InventoryItem[] = [];
 
-  addItem(ingredient: NewInventoryIngredient): void {
-    const isLowStock = ingredient.amount <= ingredient.alertThreshold;
-    const createDate = new Date();
-    const expiryDate = new Date(`${ingredient.expiryDate}T00:00:00`);
+  ngOnInit(): void {
+    this.inventoryIngredientsService.getAll().subscribe({
+      next: (ingredients) => {
+        this.items = ingredients.map((ingredient) => this.toInventoryItem(ingredient));
+        this.changeDetectorRef.markForCheck();
+      },
+      error: (error: unknown) => console.error('Unable to load ingredients', error),
+    });
+  }
 
-    const newItem: InventoryItem = {
-      name: ingredient.name,
-      icon: 'inventory_2',
-      amount: String(ingredient.amount),
-      unit: ingredient.unit,
-      totalPrice: ingredient.totalPrice,
-      alertThreshold: ingredient.alertThreshold,
-      createDate,
-      expiryDate,
-      statusText: isLowStock ? 'ใกล้หมด' : 'ปกติ',
-      statusClass: isLowStock
-        ? 'bg-primary-container/30 text-on-primary-container'
-        : 'bg-surface-container-high text-on-surface-variant',
-    };
-    this.items = [newItem, ...this.items];
-    this.changeDetectorRef.markForCheck();
+  createIngredient(ingredient: NewInventoryIngredient): void {
+    this.inventoryIngredientsService.create(ingredient).subscribe({
+      next: (createdIngredient) => {
+        this.items = [this.toInventoryItem(createdIngredient), ...this.items];
+        this.changeDetectorRef.markForCheck();
+      },
+      error: (error: unknown) => console.error('Unable to create ingredient', error),
+    });
   }
 
   protected editItem(item: InventoryItem): void {
@@ -78,7 +65,16 @@ export class InventoryTableComponent {
       .afterClosed()
       .subscribe((ingredient: NewInventoryIngredient | undefined) => {
         if (ingredient) {
-          this.updateItem(item, ingredient);
+          this.inventoryIngredientsService.update(item.id, ingredient).subscribe({
+            next: (updatedIngredient) => {
+              const updatedItem = this.toInventoryItem(updatedIngredient);
+              this.items = this.items.map((current) =>
+                current.id === item.id ? updatedItem : current,
+              );
+              this.changeDetectorRef.markForCheck();
+            },
+            error: (error: unknown) => console.error('Unable to update ingredient', error),
+          });
         }
       });
   }
@@ -98,30 +94,34 @@ export class InventoryTableComponent {
       .afterClosed()
       .subscribe((confirmed) => {
         if (confirmed) {
-          this.items = this.items.filter((current) => current !== item);
+          this.inventoryIngredientsService.delete(item.id).subscribe({
+            next: () => {
+              this.items = this.items.filter((current) => current.id !== item.id);
+              this.changeDetectorRef.markForCheck();
+            },
+            error: (error: unknown) => console.error('Unable to delete ingredient', error),
+          });
         }
-        this.changeDetectorRef.markForCheck();
       });
   }
 
-  private updateItem(item: InventoryItem, ingredient: NewInventoryIngredient): void {
+  private toInventoryItem(ingredient: InventoryIngredient): InventoryItem {
     const isLowStock = ingredient.amount <= ingredient.alertThreshold;
-    const updatedItem: InventoryItem = {
-      ...item,
+    return {
+      id: ingredient.id,
       name: ingredient.name,
+      icon: 'inventory_2',
       amount: String(ingredient.amount),
       unit: ingredient.unit,
       totalPrice: ingredient.totalPrice,
       alertThreshold: ingredient.alertThreshold,
-      expiryDate: new Date(`${ingredient.expiryDate}T00:00:00`),
+      createDate: new Date(ingredient.createdAt),
+      expiryDate: new Date(ingredient.expiryDate),
       statusText: isLowStock ? 'ใกล้หมด' : 'ปกติ',
       statusClass: isLowStock
         ? 'bg-primary-container/30 text-on-primary-container'
         : 'bg-surface-container-high text-on-surface-variant',
     };
-
-    this.items = this.items.map((current) => (current === item ? updatedItem : current));
-    this.changeDetectorRef.markForCheck();
   }
 
   private toDateInputValue(date: Date): string {

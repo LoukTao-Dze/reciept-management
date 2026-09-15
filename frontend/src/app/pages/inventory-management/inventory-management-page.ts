@@ -58,13 +58,13 @@ export class InventoryManagementPage implements OnDestroy {
       .afterClosed()
       .subscribe((ingredient: NewInventoryIngredient | undefined) => {
         if (ingredient) {
-          this.inventoryTable.addItem(ingredient);
+          this.inventoryTable.createIngredient(ingredient);
         }
       });
   }
 
   onStockEntrySaved(ingredient: NewInventoryIngredient): void {
-    this.inventoryTable.addItem(ingredient);
+    this.inventoryTable.createIngredient(ingredient);
   }
 
   ngOnDestroy(): void {

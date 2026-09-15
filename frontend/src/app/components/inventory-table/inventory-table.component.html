@@ -34,7 +34,7 @@
       </thead>
 
       <tbody>
-        @for (item of items; track item.name) {
+        @for (item of items; track item.id) {
           <tr
             class="group transition-colors hover:bg-primary-container/10"
             [class.bg-surface-container/20]="item.highlighted"

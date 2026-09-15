@@ -26,7 +26,7 @@ export class InventoryStockEntryCardComponent {
   protected unit = UnitOfIngredient.GRAM;
   protected totalPrice: number | null = null;
   protected alertThreshold: number | null = null;
-  protected expiryDate = '';
+  protected expiryDate: string | null = null;
 
   protected saveStockEntry(): void {
     if (
@@ -35,23 +35,24 @@ export class InventoryStockEntryCardComponent {
       this.amount <= 0 ||
       this.totalPrice === null ||
       this.totalPrice < 0 ||
-      !this.expiryDate
+      this.expiryDate === null
     ) {
       return;
     }
 
+    const expiryDate = new Date(`${this.expiryDate}T00:00:00`).toISOString();
     this.stockEntrySaved.emit({
       name: this.name,
       amount: this.amount,
       unit: this.unit,
       totalPrice: this.totalPrice,
       alertThreshold: this.alertThreshold || 0,
-      expiryDate: this.expiryDate,
+      expiryDate,
     });
 
     this.amount = null;
     this.totalPrice = null;
     this.alertThreshold = null;
-    this.expiryDate = '';
+    this.expiryDate = null;
   }
 }
