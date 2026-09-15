@@ -15,8 +15,8 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "[BACKEND]: IS HEALTHY 🟢"', () => {
-      expect(appController.getHealthStatus()).toBe('[BACKEND]: IS HEALTHY 🟢');
+    it('should return "[BACKEND] - IS HEALTHY 🟢"', () => {
+      expect(appController.getHealthStatus()).toBe('[BACKEND] - IS HEALTHY 🟢');
     });
   });
 });
