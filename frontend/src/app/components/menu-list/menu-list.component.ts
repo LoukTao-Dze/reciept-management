@@ -1,10 +1,18 @@
-import { Component, EventEmitter, inject, OnInit, Output, signal } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  OnInit,
+  Output,
+  signal,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { mockMenuCards, mockCategories } from '../../shared/mocks/menulist.mock';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddMenuDialogComponent } from '../add-menu-dialog/add-menu-dialog.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { MenuCatalogService } from '../../services/menu-catalog.service';
-import { MenuCard } from '../../models/menu.model';
+import { MenuCard, NewMenu } from '../../models/menu.model';
 
 @Component({
   selector: 'app-menu-list',
@@ -19,19 +27,46 @@ export class MenuListComponent implements OnInit {
 
   private readonly dialog = inject(MatDialog);
   private readonly menuCatalog = inject(MenuCatalogService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
-  menuCardsList = signal<readonly MenuCard[]>(mockMenuCards);
+  menuCardsList = signal<readonly MenuCard[]>([]);
   categories = mockCategories;
 
   ngOnInit(): void {
     this.menuCatalog.fetchMenuList().subscribe({
+      next: (menuList) => {
+        const menuCards = this.mappingMenuCard(menuList);
+        this.menuCardsList.set(menuCards);
+        this.menuSelected.emit(menuCards[0]);
+      },
       error: (error) => console.error('[MENU_LIST] - FAILED TO LOAD MENU LIST', error),
     });
   }
 
+  mappingMenuCard(menuList: NewMenu[]): MenuCard[] {
+    return menuList.map((menu) => ({
+      id: menu.id,
+      name: menu.name,
+      category: menu.category,
+      price: `฿${menu.price}`,
+      ingredientCount: `วัตถุดิบ ${menu.recipeIngredients?.length ?? 0} รายการ`,
+      profitLabel: 'กำไร 100%',
+      statusText: 'พร้อมขาย',
+      statusDotClass: 'bg-[#4ade80]',
+      imageUrl: menu.imageUrl || mockMenuCards[0].imageUrl,
+      imageAlt: `รูปภาพเมนู ${menu.name}`,
+      recipeIngredients: (menu.recipeIngredients ?? []).map((ingredient) => ({
+        name: ingredient.name,
+        costPerUnit: 0,
+        amount: ingredient.quantity ?? 0,
+        total: 0,
+        unit: ingredient.unit,
+      })),
+    }));
+  }
+
   protected get menuCards(): readonly MenuCard[] {
     return [
-      ...this.menuCardsList(),
       ...this.menuCatalog.menus().map((menu) => ({
         id: menu.id,
         name: menu.name,

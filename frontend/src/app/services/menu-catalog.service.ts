@@ -49,6 +49,21 @@ export class MenuCatalogService {
       .pipe(map((response) => response));
   }
 
+  updateMenu(menu: NewMenu) {
+    if (!menu.id) {
+      throw new Error('Cannot update a menu without an id.');
+    }
+
+    return this.http.put(`${environment.apiUrl}/update-menu/${menu.id}`, menu).pipe(
+      map((response) => {
+        this.addedMenus.update((menus) =>
+          menus.map((currentMenu) => (currentMenu.id === menu.id ? menu : currentMenu)),
+        );
+        return response;
+      }),
+    );
+  }
+
   uploadImage(image: File) {
     const formData = new FormData();
     formData.append('imageBuffer', image);

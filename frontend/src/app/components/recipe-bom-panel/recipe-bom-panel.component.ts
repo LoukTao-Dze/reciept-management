@@ -13,6 +13,8 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 import { UnitOfIngredient } from '../../enums/unit-of-ingredient.enum';
 import { MenuCard, MenuIngredient } from '../../models/menu.model';
 import { IngredientItem } from '../../models/recipe.model';
+import { MenuCatalogService } from '../../services/menu-catalog.service';
+import { NewMenu } from '../../models/menu.model';
 
 @Component({
   selector: 'app-recipe-bom-panel',
@@ -23,44 +25,18 @@ import { IngredientItem } from '../../models/recipe.model';
 })
 export class RecipeBomPanelComponent implements OnChanges {
   @Input() menuItem: MenuCard | null = null;
-
+  private menuCatalogService = inject(MenuCatalogService);
   private readonly dialog = inject(MatDialog);
   protected readonly isEditing = signal(false);
+  protected readonly previewImageUrl = signal<string | null>(null);
+  private selectedImageFile: File | null = null;
   listUnitOfIngredient = Object.values(UnitOfIngredient).map((unit) => ({
     value: unit,
     label: unit,
+    selected: false,
   }));
 
-  protected readonly ingredients = signal<readonly IngredientItem[]>([
-    {
-      name: 'กุ้งแชบ๊วย (ตัวใหญ่)',
-      costPerUnit: 500,
-      amount: 150,
-      total: 75.0,
-      unit: UnitOfIngredient.GRAM,
-    },
-    {
-      name: 'เห็ดฟาง',
-      costPerUnit: 120,
-      amount: 50,
-      total: 6.0,
-      unit: UnitOfIngredient.GRAM,
-    },
-    {
-      name: 'น้ำพริกเผา',
-      costPerUnit: 80,
-      amount: 20,
-      total: 1.6,
-      unit: UnitOfIngredient.GRAM,
-    },
-    {
-      name: 'กะทิสด',
-      costPerUnit: 60,
-      amount: 50,
-      total: 3.0,
-      unit: UnitOfIngredient.MILLILITER,
-    },
-  ]);
+  protected readonly ingredients = signal<readonly IngredientItem[]>([]);
 
   protected readonly sellPrice = signal(250);
 
@@ -96,14 +72,74 @@ export class RecipeBomPanelComponent implements OnChanges {
     return price > 0 ? (this.profit() / price) * 100 : 0;
   });
 
+  protected readonly isSaving = signal(false);
+
   startEdit(): void {
     this.editSnapshot = { ingredients: this.ingredients(), sellPrice: this.sellPrice() };
     this.isEditing.set(true);
   }
 
   saveRecipe(): void {
-    this.editSnapshot = null;
-    this.isEditing.set(false);
+    if (!this.menuItem?.id || this.isSaving()) {
+      return;
+    }
+
+    const saveMenu = (imageUrl: string) => {
+      const menu: NewMenu = {
+        id: this.menuItem?.id,
+        name: this.menuItem?.name ?? '',
+        category: this.menuItem?.category ?? '',
+        price: this.sellPrice(),
+        imageUrl,
+        recipeIngredients: this.ingredients().map((ingredient) => ({
+          name: ingredient.name,
+          quantity: ingredient.amount,
+          unit: ingredient.unit,
+        })),
+      };
+
+      this.menuCatalogService.updateMenu(menu).subscribe({
+        next: () => {
+          this.editSnapshot = null;
+          this.isEditing.set(false);
+          this.previewImageUrl.set(null);
+          this.selectedImageFile = null;
+          this.isSaving.set(false);
+        },
+        error: (error) => {
+          console.error('[RECIPE_BOM] - FAILED TO UPDATE MENU', error);
+          this.isSaving.set(false);
+        },
+      });
+    };
+
+    this.isSaving.set(true);
+    if (this.selectedImageFile) {
+      this.menuCatalogService.uploadImage(this.selectedImageFile).subscribe({
+        next: (response) =>
+          saveMenu(response.data.attachments[0]?.url ?? this.menuItem?.imageUrl ?? ''),
+        error: (error) => {
+          console.error('[RECIPE_BOM] - FAILED TO UPLOAD MENU IMAGE', error);
+          this.isSaving.set(false);
+        },
+      });
+      return;
+    }
+
+    saveMenu(this.menuItem.imageUrl);
+  }
+
+  onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    if (!file) return;
+
+    this.selectedImageFile = file;
+    const reader = new FileReader();
+    reader.onload = () => this.previewImageUrl.set(reader.result as string);
+    reader.readAsDataURL(file);
+
+    input.value = '';
   }
 
   cancelEdit(): void {
@@ -113,6 +149,8 @@ export class RecipeBomPanelComponent implements OnChanges {
     }
     this.editSnapshot = null;
     this.isEditing.set(false);
+    this.previewImageUrl.set(null);
+    this.selectedImageFile = null;
   }
 
   updateSellPrice(value: string): void {

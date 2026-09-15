@@ -25,19 +25,38 @@
     </div>
 
     <div class="flex items-center gap-md">
-      <div class="h-16 w-16 shrink-0 overflow-hidden rounded-lg shadow-sm">
+      <div
+        class="group relative h-16 w-16 shrink-0 overflow-hidden rounded-lg shadow-sm"
+        [class.cursor-pointer]="isEditing()"
+        (click)="isEditing() && imageInput.click()"
+      >
         <img
           [alt]="menuItem?.imageAlt ?? 'รูปภาพเมนูต้มยำกุ้งน้ำข้น'"
           class="h-full w-full object-cover"
           [src]="
+            previewImageUrl() ??
             menuItem?.imageUrl ??
             'https://lh3.googleusercontent.com/aida-public/AB6AXuCiqoqLByMdQmA_hRuva_EK56h4rjHXVKjkuhZDg4brXFy4EY3rCvruAgfxw6amjTMUIPjlz1Bu-hdFqBbV08wjhY2qmKS2fSwNOJ03s6NfbIVFt4wCF7D6L1jdQbpXljDsbArX5mcdARfMxtIKreeqVBlPts0uUc9VH4cm8YRQksBbYLllUyyXwJ26zvyxlGqwJkd8KbhE6we7XFl-D523el6DR2uxadCLCaRY3pa4v0VepLInaM16Xw'
           "
         />
+        @if (isEditing()) {
+          <div
+            class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100"
+          >
+            <span class="material-symbols-outlined text-[20px] text-white">photo_camera</span>
+          </div>
+        }
+        <input
+          #imageInput
+          class="hidden"
+          type="file"
+          accept="image/*"
+          (change)="onImageSelected($event)"
+        />
       </div>
       <div>
         <h3 class="font-headline-sm text-headline-sm text-on-surface">
-          {{ menuItem?.name ?? 'ต้มยำกุ้งน้ำข้น' }}
+          {{ menuItem?.name }}
         </h3>
         <p class="font-label-sm text-label-sm text-on-surface-variant">สูตรมาตรฐาน (1 ที่)</p>
       </div>
@@ -112,13 +131,15 @@
               >฿{{ ingredient.total.toFixed(2) }}</span
             >
           </div>
-          <button
-            class="text-on-surface-variant/50 opacity-0 transition-opacity hover:text-error group-hover:opacity-100 disabled:pointer-events-none disabled:opacity-0"
-            type="button"
-            (click)="removeIngredient(ingredient)"
-          >
-            <span class="material-symbols-outlined text-[20px]">delete</span>
-          </button>
+          @if (isEditing()) {
+            <button
+              class="text-on-surface-variant/50 opacity-0 transition-opacity hover:text-error group-hover:opacity-100 disabled:pointer-events-none disabled:opacity-0"
+              type="button"
+              (click)="removeIngredient(ingredient)"
+            >
+              <span class="material-symbols-outlined text-[20px]">delete</span>
+            </button>
+          }
         </div>
       </div>
     }
@@ -180,12 +201,11 @@
       <button
         class="flex flex-1 items-center justify-center gap-xs rounded-lg bg-primary py-sm font-label-md text-label-md font-bold text-on-primary shadow-md transition-colors hover:bg-surface-tint disabled:cursor-not-allowed disabled:opacity-60"
         type="button"
-        [disabled]="!isEditing()"
+        [disabled]="!isEditing() || isSaving()"
         (click)="saveRecipe()"
       >
         <span class="material-symbols-outlined text-[20px]">save</span>
         บันทึก
-        <!-- สูตรอาหาร -->
       </button>
     </div>
   </div>

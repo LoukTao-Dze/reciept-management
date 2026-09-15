@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   BadRequestException,
   UploadedFile,
   UseInterceptors,
@@ -35,6 +36,11 @@ export class AppController {
   @Post('save-menu')
   saveMenu(@Body() menu: SaveMenuDto) {
     return this.appService.saveMenu(menu);
+  }
+
+  @Put('update-menu/:id')
+  updateMenu(@Param('id') id: string, @Body() menu: SaveMenuDto) {
+    return this.appService.updateMenu(id, menu);
   }
 
   @Delete('delete-menu/:id')

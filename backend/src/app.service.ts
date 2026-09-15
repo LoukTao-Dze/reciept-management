@@ -155,6 +155,59 @@ export class AppService {
     };
   }
 
+  async updateMenu(id: string, menu: SaveMenuDto) {
+    const client = this.supabaseService.getClient();
+
+    const { data: updatedMenu, error: menuError } = await client
+      .from('menus')
+      .update({
+        name: menu.name,
+        category: menu.category,
+        price: menu.price,
+        image_url: menu.imageUrl,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (menuError) {
+      throw new InternalServerErrorException(menuError.message);
+    }
+
+    const { error: deleteIngredientsError } = await client
+      .from('menu_ingredients')
+      .delete()
+      .eq('menu_id', id);
+
+    if (deleteIngredientsError) {
+      throw new InternalServerErrorException(deleteIngredientsError.message);
+    }
+
+    const ingredients = menu.recipeIngredients ?? [];
+    if (ingredients.length > 0) {
+      const { error: ingredientsError } = await client
+        .from('menu_ingredients')
+        .insert(
+          ingredients.map((ingredient) => ({
+            menu_id: id,
+            name: ingredient.name,
+            quantity: ingredient.quantity,
+            unit: ingredient.unit,
+          })),
+        );
+
+      if (ingredientsError) {
+        throw new InternalServerErrorException(ingredientsError.message);
+      }
+    }
+
+    return {
+      message: '[BACKEND] - MENU UPDATED',
+      menu: updatedMenu,
+    };
+  }
+
   async deleteMenu(id: string) {
     const client = this.supabaseService.getClient();
 
